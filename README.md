@@ -29,10 +29,11 @@ dotnet test
 
 ```csharp
 var context = new XrmFakedContext();
-context.Initialize(new[] { new Account { Id = Guid.NewGuid(), Name = "Contoso" } });
+var account = new Entity("account") { Id = Guid.NewGuid(), ["name"] = "Contoso" };
+context.Initialize(new[] { account });
 
+context.ExecutePluginWithTarget<MyPlugin>(account);
 var service = context.GetOrganizationService();
-context.ExecutePluginWithTarget<MyPlugin>(target);
 ```
 
 ## License
