@@ -617,7 +617,6 @@ namespace FakeXrmEasy.Tests
             }
         }
 
-#if FAKE_XRM_EASY_9
         [Fact]
         public void When_doing_a_crm_linq_query_with_an_optionsetvaluecollection_in_where_filter_exception_is_thrown()
         {
@@ -666,7 +665,6 @@ namespace FakeXrmEasy.Tests
                 Assert.True(matches.Count == 1);
             }
         }
-#endif
 
         [Fact]
         public void When_doing_a_crm_linq_query_with_an_innerjoin_right_result_is_returned()

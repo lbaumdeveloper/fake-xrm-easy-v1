@@ -13,13 +13,11 @@ namespace FakeXrmEasy.Extensions.FetchXml
     {
         private static IEnumerable<ConditionOperator> OperatorsNotToConvertArray = new[]
         {
-#if FAKE_XRM_EASY_2015 || FAKE_XRM_EASY_2016 || FAKE_XRM_EASY_365 || FAKE_XRM_EASY_9
             ConditionOperator.OlderThanXWeeks,
             ConditionOperator.OlderThanXYears,
             ConditionOperator.OlderThanXDays,
             ConditionOperator.OlderThanXHours,
             ConditionOperator.OlderThanXMinutes,
-#endif
             ConditionOperator.OlderThanXMonths,
             ConditionOperator.LastXDays,
             ConditionOperator.LastXHours,
@@ -561,7 +559,6 @@ namespace FakeXrmEasy.Extensions.FetchXml
                 case "in-fiscal-year":
                     op = ConditionOperator.InFiscalYear;
                     break;
-#if !FAKE_XRM_EASY && !FAKE_XRM_EASY_2013
                 case "olderthan-x-minutes":
                     op = ConditionOperator.OlderThanXMinutes;
                     break;
@@ -577,15 +574,12 @@ namespace FakeXrmEasy.Extensions.FetchXml
                 case "olderthan-x-years":
                     op = ConditionOperator.OlderThanXYears;
                     break;
-#endif
-#if FAKE_XRM_EASY_9
                 case "contain-values":
                     op = ConditionOperator.ContainValues;
                     break;
                 case "not-contain-values":
                     op = ConditionOperator.DoesNotContainValues;
                     break;
-#endif
                 default:
                     throw PullRequestException.FetchXmlOperatorNotImplemented(elem.GetAttribute("operator").Value);
             }
@@ -607,7 +601,6 @@ namespace FakeXrmEasy.Extensions.FetchXml
             //Otherwise, a single value was used
             if (value != null)
             {
-#if FAKE_XRM_EASY_2013 || FAKE_XRM_EASY_2015 || FAKE_XRM_EASY_2016 || FAKE_XRM_EASY_365 || FAKE_XRM_EASY_9
                 if (string.IsNullOrWhiteSpace(conditionEntityName))
                 {
                     return new ConditionExpression(attributeName, op, GetConditionExpressionValueCast(value, ctx, entityName, attributeName, op));
@@ -617,13 +610,8 @@ namespace FakeXrmEasy.Extensions.FetchXml
                     return new ConditionExpression(conditionEntityName, attributeName, op, GetConditionExpressionValueCast(value, ctx, entityName, attributeName, op));
                 }
 
-#else
-                return new ConditionExpression(attributeName, op, GetConditionExpressionValueCast(value, ctx, entityName, attributeName, op));
-           
-#endif
             }
 
-#if FAKE_XRM_EASY_2013 || FAKE_XRM_EASY_2015 || FAKE_XRM_EASY_2016 || FAKE_XRM_EASY_365 || FAKE_XRM_EASY_9
 
             if (string.IsNullOrWhiteSpace(conditionEntityName))
             {
@@ -633,9 +621,6 @@ namespace FakeXrmEasy.Extensions.FetchXml
             {
                 return new ConditionExpression(conditionEntityName, attributeName, op, values);
             }
-#else
-            return new ConditionExpression(attributeName, op, values);
-#endif
 
 
 
@@ -647,9 +632,7 @@ namespace FakeXrmEasy.Extensions.FetchXml
             if (t == typeof(int)
                 || t == typeof(int?)
                 || t.IsOptionSet()
-#if FAKE_XRM_EASY_9
                 || t.IsOptionSetValueCollection()
-#endif
             )
             {
                 int intValue = 0;
@@ -671,9 +654,6 @@ namespace FakeXrmEasy.Extensions.FetchXml
             else if (t == typeof(Guid)
                 || t == typeof(Guid?)
                 || t == typeof(EntityReference)
-#if FAKE_XRM_EASY
-                    || t == typeof(Microsoft.Xrm.Client.CrmEntityReference) 
-#endif
                 )
             {
                 Guid gValue = Guid.Empty;
@@ -681,9 +661,6 @@ namespace FakeXrmEasy.Extensions.FetchXml
                 if (Guid.TryParse(value, out gValue))
                 {
                     if (t == typeof(EntityReference)
-#if FAKE_XRM_EASY
-                    || t == typeof(Microsoft.Xrm.Client.CrmEntityReference) 
-#endif
                         )
                     {
                         return new EntityReference() { Id = gValue };

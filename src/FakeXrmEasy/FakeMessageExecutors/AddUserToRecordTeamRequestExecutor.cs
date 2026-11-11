@@ -1,5 +1,4 @@
-﻿#if FAKE_XRM_EASY_2013 || FAKE_XRM_EASY_2015 || FAKE_XRM_EASY_2016 || FAKE_XRM_EASY_365 || FAKE_XRM_EASY_9
-using System;
+﻿using System;
 using System.Linq;
 using Microsoft.Xrm.Sdk;
 using System.ServiceModel;
@@ -95,4 +94,3 @@ namespace FakeXrmEasy.FakeMessageExecutors
         }
     }
 }
-#endif

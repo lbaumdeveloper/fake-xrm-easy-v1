@@ -1,5 +1,4 @@
-﻿#if FAKE_XRM_EASY_9
-using FakeXrmEasy.Tests.PluginsForTesting;
+﻿using FakeXrmEasy.Tests.PluginsForTesting;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Xunit;
@@ -31,4 +30,3 @@ namespace FakeXrmEasy.Tests.Features
         }
     }
 }
-#endif

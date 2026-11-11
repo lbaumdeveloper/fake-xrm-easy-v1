@@ -60,7 +60,6 @@ namespace FakeXrmEasy.Tests.Extensions
             Assert.Equal(activityParties, clone, new ActivityPartyComparer());
         }
 
-#if !FAKE_XRM_EASY
          //Enity images aren't supported in versions prior to 2013, so no need to support byte arrays as attributes
 
         [Fact]
@@ -79,7 +78,6 @@ namespace FakeXrmEasy.Tests.Extensions
             Assert.Equal(2000, clone.Length);
             Assert.Equal(image, clone);
         }
-#endif
 
         #region Private Helper Classes
 

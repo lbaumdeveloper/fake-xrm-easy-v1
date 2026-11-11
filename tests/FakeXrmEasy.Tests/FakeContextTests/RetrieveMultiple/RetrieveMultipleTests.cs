@@ -517,7 +517,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.RetrieveMultiple
         }
 
 
-#if !FAKE_XRM_EASY
         [Fact]
         public void Can_Filter_Using_Entity_Name_Without_Alias()
         {
@@ -571,7 +570,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.RetrieveMultiple
             EntityCollection result = service.RetrieveMultiple(query);
             Assert.Equal(1, result.Entities.Count);
         }
-#endif
 
         [Fact]
         public void Should_Allow_Using_Aliases_with_Dot()

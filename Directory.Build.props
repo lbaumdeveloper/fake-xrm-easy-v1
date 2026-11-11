@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <DefineConstants>$(DefineConstants);FAKE_XRM_EASY_9</DefineConstants>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)fakexrmeasy.snk</AssemblyOriginatorKeyFile>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>

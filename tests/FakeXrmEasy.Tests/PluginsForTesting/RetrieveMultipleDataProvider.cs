@@ -1,5 +1,4 @@
-﻿#if FAKE_XRM_EASY_9
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Extensions;
 using Microsoft.Xrm.Sdk.Query;
 using System;
@@ -59,4 +58,3 @@ namespace FakeXrmEasy.Tests.PluginsForTesting
         }
     }
 }
-#endif

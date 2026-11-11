@@ -147,7 +147,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests
             Assert.Equal(otherEntity.Id, otherEntityInContext.Id);
         }
 
-        #if !FAKE_XRM_EASY && !FAKE_XRM_EASY_2013 && !FAKE_XRM_EASY_2015
         [Fact]
         public void An_entity_which_references_another_existent_entity_by_alternate_key_can_be_created_when_validate_is_true()
         {
@@ -252,6 +251,5 @@ namespace FakeXrmEasy.Tests.FakeContextTests
 
             Assert.Equal(((EntityReference)otherEntityInContext["new_accountId"]).Id, account2.Id);
         }
-#endif
     }
 }

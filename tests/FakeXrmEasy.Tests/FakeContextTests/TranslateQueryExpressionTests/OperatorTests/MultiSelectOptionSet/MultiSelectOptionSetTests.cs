@@ -1,5 +1,4 @@
-﻿#if FAKE_XRM_EASY_9
-using System.Linq;
+﻿using System.Linq;
 using System.ServiceModel;
 using Crm;
 using Microsoft.Xrm.Sdk;
@@ -696,4 +695,3 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         }
     }
 }
-#endif

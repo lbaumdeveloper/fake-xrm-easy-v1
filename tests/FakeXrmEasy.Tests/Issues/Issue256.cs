@@ -1,5 +1,4 @@
-﻿#if FAKE_XRM_EASY_2013 || FAKE_XRM_EASY_2015 || FAKE_XRM_EASY_2016 || FAKE_XRM_EASY_365 || FAKE_XRM_EASY_9
-
+﻿
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using System;
@@ -88,4 +87,3 @@ namespace FakeXrmEasy.Tests.Issues
         }
     }
 }
-#endif

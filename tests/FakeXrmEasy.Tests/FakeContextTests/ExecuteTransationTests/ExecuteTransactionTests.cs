@@ -1,5 +1,4 @@
-﻿#if FAKE_XRM_EASY_2016 || FAKE_XRM_EASY_365 || FAKE_XRM_EASY_9
-
+﻿
 using FakeXrmEasy.FakeMessageExecutors;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
@@ -66,4 +65,3 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteTransationTests
     }
 }
 
-#endif

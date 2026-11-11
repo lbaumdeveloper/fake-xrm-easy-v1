@@ -416,7 +416,6 @@ namespace FakeXrmEasy
             return _serviceEndpointNotificationService ??
                    (_serviceEndpointNotificationService = A.Fake<IServiceEndpointNotificationService>());
         }
-#if FAKE_XRM_EASY_9
         public IEntityDataSourceRetrieverService GetFakedEntityDataSourceRetrieverService()
         {
             var service = A.Fake<IEntityDataSourceRetrieverService>();
@@ -424,6 +423,5 @@ namespace FakeXrmEasy
                 .ReturnsLazily(() => EntityDataSourceRetriever);
             return service;
         }
-#endif
     }
 }

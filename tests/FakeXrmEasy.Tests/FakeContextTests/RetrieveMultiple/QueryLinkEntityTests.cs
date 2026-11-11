@@ -690,7 +690,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests
             Assert.Equal(6, entities.Entities.Count);
         }
 
-#if FAKE_XRM_EASY_2016 || FAKE_XRM_EASY_2015 || FAKE_XRM_EASY_2013 || FAKE_XRM_EASY_365 || FAKE_XRM_EASY_9
         [Fact]
         public void Should_Not_Apply_Left_Outer_Join_Filters_When_The_Right_hand_side_of_the_expression_wasnt_found()
         {
@@ -842,7 +841,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests
             var incidents = service.RetrieveMultiple(query).Entities;
             Assert.Equal(1, incidents.Count);
         }
-#endif
 
         [Fact]
         public void When_There_Is_A_LinkedEntity_The_Output_EntityAlias_Should_Be_Suffixed_With_1()

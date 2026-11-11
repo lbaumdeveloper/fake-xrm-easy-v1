@@ -486,7 +486,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.FetchXml
             Assert.Equal("Iniesta", query.Criteria.Conditions[0].Values[1].ToString());
         }
 
-#if FAKE_XRM_EASY_9
         [Fact]
         public void FetchXml_Operator_In_MultiSelectOptionSet()
         {
@@ -542,7 +541,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.FetchXml
             Assert.Equal(1, query.Criteria.Conditions[0].Values[0]);
             Assert.Equal(2, query.Criteria.Conditions[0].Values[1]);
         }
-#endif
 
         [Fact]
         public void FetchXml_Operator_Null()
@@ -737,7 +735,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.FetchXml
             Assert.Equal(retrievedUser, ct3.Id);
         }
 
-#if !FAKE_XRM_EASY && !FAKE_XRM_EASY_2013
         [Fact]
         public void FetchXml_Operator_Older_Than_X_Minutes_Translation()
         {
@@ -1062,7 +1059,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.FetchXml
             var retrievedUser = collection.Entities[0].Id;
             Assert.Equal(retrievedUser, ct3.Id);
         }
-#endif
 
         [Fact]
         public void FetchXml_Operator_Last_Seven_Days_Translation()
@@ -2183,7 +2179,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.FetchXml
         }
 
 
-#if FAKE_XRM_EASY_9
         [Fact]
         public void FetchXml_Operator_ContainValues_Translation()
         {
@@ -2295,9 +2290,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.FetchXml
             Assert.Equal(1, collection.Entities.Count);
             Assert.Equal(ct2.Id, collection.Entities[0].Id);
         }
-#endif
 
-#if FAKE_XRM_EASY_2013 || FAKE_XRM_EASY_2015 || FAKE_XRM_EASY_2016 || FAKE_XRM_EASY_365 || FAKE_XRM_EASY_9
 
         [Fact]
         public void FetchXml_EntityName_Attribute_Translation()
@@ -2441,7 +2434,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.FetchXml
 
             Assert.True(result.Entities.Any());
         }
-#endif
 
         [Fact]
         public void FetchXml_Operator_Last_X_Hours_Translation()

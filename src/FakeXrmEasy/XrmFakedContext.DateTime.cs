@@ -14,9 +14,6 @@ namespace FakeXrmEasy
 
         private static Dictionary<string, Dictionary<string, DateTimeAttributeBehavior>> DefaultDateBehaviour()
         {
-#if FAKE_XRM_EASY || FAKE_XRM_EASY_2013
-            return new Dictionary<string, Dictionary<string, DateTimeAttributeBehavior>>();
-#else
             return new Dictionary<string, Dictionary<string, DateTimeAttributeBehavior>>
             {
                 {
@@ -61,7 +58,6 @@ namespace FakeXrmEasy
                     }
                 }
             };
-#endif
         }
     }
 }

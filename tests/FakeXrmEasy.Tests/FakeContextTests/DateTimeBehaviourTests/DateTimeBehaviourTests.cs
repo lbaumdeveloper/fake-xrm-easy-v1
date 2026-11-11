@@ -1,5 +1,4 @@
-﻿#if !FAKE_XRM_EASY && !FAKE_XRM_EASY_2013
-
+﻿
 using Crm;
 using FakeXrmEasy.Metadata;
 using Microsoft.Xrm.Sdk;
@@ -165,4 +164,3 @@ namespace FakeXrmEasy.Tests.FakeContextTests
     }
 }
 
-#endif

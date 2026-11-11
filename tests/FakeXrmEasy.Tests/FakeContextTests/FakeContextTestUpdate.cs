@@ -98,7 +98,6 @@ namespace FakeXrmEasy.Tests
             Assert.Equal(context.Data["account"][guid]["name"], "After update");
         }
 
-#if !FAKE_XRM_EASY && !FAKE_XRM_EASY_2013 && !FAKE_XRM_EASY_2015
         [Fact]
         public void When_updating_an_entity_by_alternate_key_the_context_should_reflect_changes()
         {
@@ -129,9 +128,7 @@ namespace FakeXrmEasy.Tests
 
             Assert.Equal(context.Data["account"][guid]["name"], "After update");
         }
-#endif
 
-#if FAKE_XRM_EASY_9
         [Fact]
         public void When_updating_an_optionsetvaluecollection_the_context_should_reflect_changes()
         {
@@ -151,7 +148,6 @@ namespace FakeXrmEasy.Tests
 
             Assert.Equal(context.Data["contact"][guid]["new_multiselectattribute"], new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) });
         }
-#endif
 
         [Fact]
         public void When_update_is_invoked_with_non_existing_entity_an_exception_is_thrown()

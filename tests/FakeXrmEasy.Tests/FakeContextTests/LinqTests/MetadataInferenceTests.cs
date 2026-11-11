@@ -101,7 +101,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.LinqTests
             }
         }
 
-#if FAKE_XRM_EASY_9
         [Fact]
         public static void When_using_proxy_types_assembly_the_optionset_metadata_is_inferred_from_injected_metadata_as_a_fallback()
         {
@@ -204,7 +203,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.LinqTests
 
             Assert.True(contacts.Entities.Count == 1);
         }
-#endif
 
         [Fact]
         public static void When_using_proxy_types_assembly_the_finding_attribute_metadata_fails_if_neither_proxy_type_or_injected_metadata_exist()

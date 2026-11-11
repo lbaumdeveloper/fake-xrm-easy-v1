@@ -138,7 +138,6 @@ namespace FakeXrmEasy.Tests
             }
         }
 
-#if !FAKE_XRM_EASY && !FAKE_XRM_EASY_2013 && !FAKE_XRM_EASY_2015
         [Fact]
         public void When_delete_is_invoked_with_an_existing_entity_by_alternate_key_that_entity_is_delete_from_the_context()
         {
@@ -170,7 +169,6 @@ namespace FakeXrmEasy.Tests
 
             Assert.True(context.Data["account"].Count == 0);
         }
-#endif
 
     }
 }

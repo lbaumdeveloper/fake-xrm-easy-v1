@@ -33,37 +33,9 @@ namespace FakeXrmEasy.Tests.FakeContextTests.RetrieveVersionRequestTests
             var majorVersion = versionComponents[0];
             var minorVersion = versionComponents[1];
 
-#if FAKE_XRM_EASY_9
 
             Assert.True(int.Parse(majorVersion) >= 9);
 
-#elif FAKE_XRM_EASY_365
-
-            Assert.True(int.Parse(majorVersion) >= 8);
-
-            if (majorVersion == "8")
-            {
-                Assert.True(int.Parse(minorVersion) >= 2);
-            }
-
-#elif FAKE_XRM_EASY_2016
-
-            Assert.True(int.Parse(majorVersion) >= 8);            
-            Assert.True(int.Parse(minorVersion) >= 0);
-            Assert.True(int.Parse(minorVersion) < 2);
-
-#elif FAKE_XRM_EASY_2015
-
-            Assert.True(version.StartsWith("7"));
-
-#elif FAKE_XRM_EASY_2013
-
-            Assert.True(version.StartsWith("6"));
-
-#elif FAKE_XRM_EASY
-
-            Assert.True(version.StartsWith("5"));
-#endif
         }
     }
 }

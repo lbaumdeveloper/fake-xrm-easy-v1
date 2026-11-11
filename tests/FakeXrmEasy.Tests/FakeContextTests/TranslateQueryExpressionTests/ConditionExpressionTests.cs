@@ -207,7 +207,6 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests
             Assert.True(ec.Entities.Count == 2);
         }
 
-#if FAKE_XRM_EASY_2013 || FAKE_XRM_EASY_2015 || FAKE_XRM_EASY_2016 || FAKE_XRM_EASY_365 || FAKE_XRM_EASY_9
 
         [Fact]
         public void ConditionExpression_Test()
@@ -248,6 +247,5 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests
             Assert.Equal(1, result.Count());
         }
 
-#endif
     }
 }

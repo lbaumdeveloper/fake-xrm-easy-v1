@@ -375,21 +375,17 @@ namespace FakeXrmEasy
                    {
                        return GetFakedServiceEndpointNotificationService();
                    }
-#if FAKE_XRM_EASY_9
                    if (t == typeof(IEntityDataSourceRetrieverService))
                    {
                        return GetFakedEntityDataSourceRetrieverService();
                    }
-#endif
                    throw new PullRequestException("The specified service type is not supported");
                });
 
             return fakedServiceProvider;
         }
 
-#if FAKE_XRM_EASY_9
         public Entity EntityDataSourceRetriever { get; set; }
-#endif
 
         public XrmFakedTracingService GetFakeTracingService()
         {
