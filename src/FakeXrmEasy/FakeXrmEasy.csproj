@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>FakeXrmEasy</RootNamespace>
+    <AssemblyName>FakeXrmEasy</AssemblyName>
+    <Version>1.58.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FakeItEasy" Version="6.0.0" />
+    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.4" />
+    <PackageReference Include="Microsoft.CrmSdk.Deployment" Version="9.0.2.4" />
+    <PackageReference Include="Microsoft.CrmSdk.Workflow" Version="9.0.2.4" />
+    <PackageReference Include="Microsoft.CrmSdk.XrmTooling.CoreAssembly" Version="9.0.2.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.ServiceModel" />
+  </ItemGroup>
+</Project>
