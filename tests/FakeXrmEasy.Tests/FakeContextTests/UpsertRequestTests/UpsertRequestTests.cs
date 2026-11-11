@@ -81,7 +81,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.UpsertRequestTests
             var service = context.GetOrganizationService();
 
             var metadata = context.GetEntityMetadataByName("contact");
-            metadata.SetFieldValue("_keys", new EntityKeyMetadata[]
+            metadata.SetSealedPropertyValue("Keys", new EntityKeyMetadata[]
             {
                 new EntityKeyMetadata()
                 {
@@ -116,7 +116,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.UpsertRequestTests
 
 
             var metadata = context.GetEntityMetadataByName("contact");
-            metadata.SetFieldValue("_keys", new EntityKeyMetadata[]
+            metadata.SetSealedPropertyValue("Keys", new EntityKeyMetadata[]
             {
                 new EntityKeyMetadata()
                 {

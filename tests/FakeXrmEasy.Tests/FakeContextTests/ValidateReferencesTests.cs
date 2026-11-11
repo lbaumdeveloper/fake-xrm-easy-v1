@@ -158,7 +158,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests
             accountMetadata.LogicalName = Account.EntityLogicalName;
             var alternateKeyMetadata = new Microsoft.Xrm.Sdk.Metadata.EntityKeyMetadata();
             alternateKeyMetadata.KeyAttributes = new string[] { "alternateKey" };
-            accountMetadata.SetFieldValue("_keys", new Microsoft.Xrm.Sdk.Metadata.EntityKeyMetadata[]
+            accountMetadata.SetSealedPropertyValue("Keys", new Microsoft.Xrm.Sdk.Metadata.EntityKeyMetadata[]
                  {
                  alternateKeyMetadata
                  });
@@ -190,7 +190,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests
             accountMetadata.LogicalName = Account.EntityLogicalName;
             var alternateKeyMetadata = new Microsoft.Xrm.Sdk.Metadata.EntityKeyMetadata();
             alternateKeyMetadata.KeyAttributes = new string[] { "alternateKey" };
-            accountMetadata.SetFieldValue("_keys", new Microsoft.Xrm.Sdk.Metadata.EntityKeyMetadata[]
+            accountMetadata.SetSealedPropertyValue("Keys", new Microsoft.Xrm.Sdk.Metadata.EntityKeyMetadata[]
                  {
                  alternateKeyMetadata
                  });
@@ -221,7 +221,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests
             accountMetadata.LogicalName = Account.EntityLogicalName;
             var alternateKeyMetadata = new Microsoft.Xrm.Sdk.Metadata.EntityKeyMetadata();
             alternateKeyMetadata.KeyAttributes = new string[] { "alternateKey" };
-            accountMetadata.SetFieldValue("_keys", new Microsoft.Xrm.Sdk.Metadata.EntityKeyMetadata[]
+            accountMetadata.SetSealedPropertyValue("Keys", new Microsoft.Xrm.Sdk.Metadata.EntityKeyMetadata[]
                  {
                  alternateKeyMetadata
                  });
