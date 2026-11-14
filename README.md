@@ -25,6 +25,17 @@ dotnet test
 | `src/FakeXrmEasy` | The library |
 | `tests/FakeXrmEasy.Tests` | xUnit tests |
 
+## CI and releases
+
+`.gitlab-ci.yml` packs the library on a Linux runner, runs the tests on a Windows runner and, for tags like `v1.59.0`, publishes the package to this project's GitLab package registry. Set the `WINDOWS_RUNNER_TAG` variable if your Windows runner uses a different tag.
+
+To consume the package, add the registry as a NuGet source:
+
+```
+dotnet nuget add source "https://<gitlab-host>/api/v4/projects/<project-id>/packages/nuget/index.json" --name gitlab --username <user> --password <token>
+dotnet add package __COMPANY__.FakeXrmEasy.v9
+```
+
 ## Usage
 
 ```csharp
