@@ -1,0 +1,74 @@
+stages:
+  - build
+  - test
+  - publish
+
+variables:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  NUGET_PACKAGES: "$CI_PROJECT_DIR/.nuget/packages"
+  WINDOWS_RUNNER_TAG: "saas-windows-medium-amd64"
+  CONFIGURATION: "Release"
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+.linux-dotnet:
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  cache:
+    key:
+      files:
+        - Directory.Build.props
+        - src/FakeXrmEasy/FakeXrmEasy.csproj
+        - tests/FakeXrmEasy.Tests/FakeXrmEasy.Tests.csproj
+    paths:
+      - .nuget/packages
+
+pack:
+  extends: .linux-dotnet
+  stage: build
+  script:
+    - VERSION="${CI_COMMIT_TAG#v}"
+    - if [ -z "$VERSION" ]; then VERSION="$(dotnet msbuild src/FakeXrmEasy/FakeXrmEasy.csproj -getProperty:Version)-ci.$CI_PIPELINE_IID"; fi
+    - echo "Packing version $VERSION"
+    - dotnet pack src/FakeXrmEasy/FakeXrmEasy.csproj -c $CONFIGURATION -p:Version=$VERSION -o artifacts
+  artifacts:
+    paths:
+      - artifacts/*.nupkg
+    expire_in: 1 week
+
+test:
+  stage: test
+  needs: []
+  tags:
+    - $WINDOWS_RUNNER_TAG
+  before_script:
+    - |
+      if (-not (Get-Command dotnet -ErrorAction SilentlyContinue) -or -not ((dotnet --list-sdks) -match '^8\.')) {
+        Invoke-WebRequest https://dot.net/v1/dotnet-install.ps1 -OutFile dotnet-install.ps1
+        ./dotnet-install.ps1 -Channel 8.0 -InstallDir "$env:CI_PROJECT_DIR\.dotnet"
+        $env:PATH = "$env:CI_PROJECT_DIR\.dotnet;$env:PATH"
+      }
+    - dotnet --info
+  script:
+    - dotnet test FakeXrmEasy.sln -c $env:CONFIGURATION --logger "junit;LogFilePath=$env:CI_PROJECT_DIR\TestResults\{assembly}.xml"
+  artifacts:
+    when: always
+    reports:
+      junit: TestResults/*.xml
+    expire_in: 1 week
+
+publish:
+  extends: .linux-dotnet
+  stage: publish
+  needs:
+    - pack
+    - test
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+.*$/
+  script:
+    - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password "$CI_JOB_TOKEN" --store-password-in-clear-text
+    - dotnet nuget push "artifacts/*.nupkg" --source gitlab
