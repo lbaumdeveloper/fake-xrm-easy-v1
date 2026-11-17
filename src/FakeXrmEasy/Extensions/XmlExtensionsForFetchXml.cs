@@ -481,6 +481,12 @@ namespace FakeXrmEasy.Extensions.FetchXml
                 case "eq-userid":
                     op = ConditionOperator.EqualUserId;
                     break;
+                case "eq-userteams":
+                    op = ConditionOperator.EqualUserTeams;
+                    break;
+                case "eq-useroruserteams":
+                    op = ConditionOperator.EqualUserOrUserTeams;
+                    break;
                 case "ne-userid":
                     op = ConditionOperator.NotEqualUserId;
                     break;

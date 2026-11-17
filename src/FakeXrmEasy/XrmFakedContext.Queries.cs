@@ -699,6 +699,14 @@ namespace FakeXrmEasy
                     operatorExpression = Expression.Not(TranslateConditionExpressionEqual(context, c, getNonBasicValueExpr, containsAttributeExpression));
                     break;
 
+                case ConditionOperator.EqualUserTeams:
+                    operatorExpression = TranslateConditionExpressionIn(WithValues(c, GetCallerTeamIds(context)), getNonBasicValueExpr, containsAttributeExpression);
+                    break;
+
+                case ConditionOperator.EqualUserOrUserTeams:
+                    operatorExpression = TranslateConditionExpressionIn(WithValues(c, GetCallerTeamIds(context).Concat(context.CallerId != null ? new[] { context.CallerId.Id } : new Guid[0])), getNonBasicValueExpr, containsAttributeExpression);
+                    break;
+
                 case ConditionOperator.EqualBusinessId:
                     operatorExpression = TranslateConditionExpressionEqual(context, c, getNonBasicValueExpr, containsAttributeExpression);
                     break;
@@ -1397,6 +1405,30 @@ namespace FakeXrmEasy
             }
 
             return conditionValue;
+        }
+
+        private static TypedConditionExpression WithValues(TypedConditionExpression tc, IEnumerable<Guid> values)
+        {
+            var condition = new ConditionExpression(tc.CondExpression.EntityName, tc.CondExpression.AttributeName, ConditionOperator.In, values.Cast<object>().ToArray());
+            return new TypedConditionExpression(condition) { AttributeType = tc.AttributeType, IsOuter = tc.IsOuter };
+        }
+
+        private static IEnumerable<Guid> GetCallerTeamIds(XrmFakedContext context)
+        {
+            if (context.CallerId == null || !context.Data.ContainsKey("teammembership"))
+            {
+                return Enumerable.Empty<Guid>();
+            }
+
+            return context.Data["teammembership"].Values
+                .Where(tm => ToGuid(tm["systemuserid"]) == context.CallerId.Id)
+                .Select(tm => ToGuid(tm["teamid"]))
+                .ToList();
+        }
+
+        private static Guid ToGuid(object value)
+        {
+            return value is EntityReference reference ? reference.Id : (Guid)value;
         }
 
         protected static Expression TranslateConditionExpressionIn(TypedConditionExpression tc, Expression getAttributeValueExpr, Expression containsAttributeExpr)
