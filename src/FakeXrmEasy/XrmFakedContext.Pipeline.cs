@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using FakeXrmEasy.Extensions;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 
@@ -21,14 +22,15 @@ namespace FakeXrmEasy
         /// <param name="mode">The mode in which the plugin should be executed.</param>
         /// <param name="rank">The order in which this plugin should be executed in comparison to other plugins registered with the same <paramref name="message"/> and <paramref name="stage"/>.</param>
         /// <param name="filteringAttributes">When not one of these attributes is present in the execution context, the execution of the plugin is prevented.</param>
-        public void RegisterPluginStep<TPlugin, TEntity>(string message, ProcessingStepStage stage = ProcessingStepStage.Postoperation, ProcessingStepMode mode = ProcessingStepMode.Synchronous, int rank = 1, string[] filteringAttributes = null)
+        /// <param name="images">The pre and post entity images passed to the plugin.</param>
+        public void RegisterPluginStep<TPlugin, TEntity>(string message, ProcessingStepStage stage = ProcessingStepStage.Postoperation, ProcessingStepMode mode = ProcessingStepMode.Synchronous, int rank = 1, string[] filteringAttributes = null, IEnumerable<PluginStepImage> images = null)
             where TPlugin : IPlugin
             where TEntity : Entity, new()
         {
             var entity = new TEntity();
             var entityTypeCode = (int)entity.GetType().GetField("EntityTypeCode").GetValue(entity);
 
-            RegisterPluginStep<TPlugin>(message, stage, mode, rank, filteringAttributes, entityTypeCode);
+            RegisterPluginStep<TPlugin>(message, stage, mode, rank, filteringAttributes, entityTypeCode, images);
         }
 
         /// <summary>
@@ -41,7 +43,8 @@ namespace FakeXrmEasy
         /// <param name="rank">The order in which this plugin should be executed in comparison to other plugins registered with the same <paramref name="message"/> and <paramref name="stage"/>.</param>
         /// <param name="filteringAttributes">When not one of these attributes is present in the execution context, the execution of the plugin is prevented.</param>
         /// <param name="primaryEntityTypeCode">The entity type code to filter this step for.</param>
-        public void RegisterPluginStep<TPlugin>(string message, ProcessingStepStage stage = ProcessingStepStage.Postoperation, ProcessingStepMode mode = ProcessingStepMode.Synchronous, int rank = 1, string[] filteringAttributes = null, int? primaryEntityTypeCode = null)
+        /// <param name="images">The pre and post entity images passed to the plugin.</param>
+        public void RegisterPluginStep<TPlugin>(string message, ProcessingStepStage stage = ProcessingStepStage.Postoperation, ProcessingStepMode mode = ProcessingStepMode.Synchronous, int rank = 1, string[] filteringAttributes = null, int? primaryEntityTypeCode = null, IEnumerable<PluginStepImage> images = null)
             where TPlugin : IPlugin
         {
             // Message
@@ -60,7 +63,7 @@ namespace FakeXrmEasy
             var type = typeof(TPlugin);
             var assemblyName = type.Assembly.GetName();
 
-            var pluginType = this.CreateQuery("plugintype").FirstOrDefault(pt => string.Equals(pt.GetAttributeValue<string>("typename"), type.FullName) && string.Equals(pt.GetAttributeValue<string>("asemblyname"), assemblyName.Name));
+            var pluginType = this.CreateQuery("plugintype").FirstOrDefault(pt => string.Equals(pt.GetAttributeValue<string>("typename"), type.FullName) && string.Equals(pt.GetAttributeValue<string>("assemblyname"), assemblyName.Name));
             if (pluginType == null)
             {
                 pluginType = new Entity("plugintype")
@@ -101,16 +104,29 @@ namespace FakeXrmEasy
                 ["rank"] = rank
             };
             this.AddEntityWithDefaults(sdkMessageProcessingStep);
+
+            foreach (var image in images ?? Enumerable.Empty<PluginStepImage>())
+            {
+                this.AddEntityWithDefaults(new Entity("sdkmessageprocessingstepimage")
+                {
+                    Id = Guid.NewGuid(),
+                    ["sdkmessageprocessingstepid"] = sdkMessageProcessingStep.ToEntityReference(),
+                    ["entityalias"] = image.Name,
+                    ["name"] = image.Name,
+                    ["imagetype"] = new OptionSetValue((int)image.ImageType),
+                    ["attributes"] = image.Attributes.Length > 0 ? string.Join(",", image.Attributes) : null
+                });
+            }
         }
 
-        private void ExecutePipelineStage(string method, ProcessingStepStage stage, ProcessingStepMode mode, Entity entity)
+        private void ExecutePipelineStage(string method, ProcessingStepStage stage, ProcessingStepMode mode, Entity entity, Entity preImageSource = null, Entity postImageSource = null)
         {
             var plugins = GetStepsForStage(method, stage, mode, entity);
 
-            ExecutePipelinePlugins(plugins, entity);
+            ExecutePipelinePlugins(plugins, entity, preImageSource, postImageSource);
         }
 
-        private void ExecutePipelineStage(string method, ProcessingStepStage stage, ProcessingStepMode mode, EntityReference entityReference)
+        private void ExecutePipelineStage(string method, ProcessingStepStage stage, ProcessingStepMode mode, EntityReference entityReference, Entity preImageSource = null)
         {
             var entityType = FindReflectedType(entityReference.LogicalName);
             if (entityType == null)
@@ -120,10 +136,10 @@ namespace FakeXrmEasy
 
             var plugins = GetStepsForStage(method, stage, mode, (Entity)Activator.CreateInstance(entityType));
 
-            ExecutePipelinePlugins(plugins, entityReference);
+            ExecutePipelinePlugins(plugins, entityReference, preImageSource, null);
         }
 
-        private void ExecutePipelinePlugins(IEnumerable<Entity> plugins, object target)
+        private void ExecutePipelinePlugins(IEnumerable<Entity> plugins, object target, Entity preImageSource, Entity postImageSource)
         {
             foreach (var plugin in plugins)
             {
@@ -140,9 +156,62 @@ namespace FakeXrmEasy
                 pluginContext.OutputParameters = new ParameterCollection();
                 pluginContext.PreEntityImages = new EntityImageCollection();
                 pluginContext.PostEntityImages = new EntityImageCollection();
+                AddStepImages(plugin, pluginContext, preImageSource, postImageSource);
 
                 pluginMethod.Invoke(this, new object[] { pluginContext });
             }
+        }
+
+        private void AddStepImages(Entity step, XrmFakedPluginExecutionContext pluginContext, Entity preImageSource, Entity postImageSource)
+        {
+            var images = CreateQuery("sdkmessageprocessingstepimage")
+                .Where(i => i.GetAttributeValue<EntityReference>("sdkmessageprocessingstepid") != null
+                         && i.GetAttributeValue<EntityReference>("sdkmessageprocessingstepid").Id == step.Id)
+                .ToList();
+
+            foreach (var image in images)
+            {
+                var imageType = (ProcessingStepImageType)image.GetAttributeValue<OptionSetValue>("imagetype").Value;
+                var alias = image.GetAttributeValue<string>("entityalias");
+                var attributes = image.GetAttributeValue<string>("attributes");
+
+                if (preImageSource != null && imageType != ProcessingStepImageType.PostImage)
+                {
+                    pluginContext.PreEntityImages.Add(alias, CreateImage(preImageSource, attributes));
+                }
+
+                if (postImageSource != null && imageType != ProcessingStepImageType.PreImage)
+                {
+                    pluginContext.PostEntityImages.Add(alias, CreateImage(postImageSource, attributes));
+                }
+            }
+        }
+
+        private static Entity CreateImage(Entity source, string attributes)
+        {
+            var image = new Entity(source.LogicalName) { Id = source.Id };
+            var columns = string.IsNullOrWhiteSpace(attributes)
+                ? source.Attributes.Keys.ToArray()
+                : attributes.Split(',').Select(a => a.Trim()).ToArray();
+
+            foreach (var column in columns.Where(source.Attributes.ContainsKey))
+            {
+                image[column] = EntityExtensions.CloneAttribute(source[column]);
+            }
+
+            return image;
+        }
+
+        private static bool PassesFilteringAttributes(Entity step, object target)
+        {
+            var filteringAttributes = step.GetAttributeValue<string>("filteringattributes");
+            var entity = target as Entity;
+            if (string.IsNullOrWhiteSpace(filteringAttributes) || entity == null)
+            {
+                return true;
+            }
+
+            return filteringAttributes.Split(',').Select(a => a.Trim()).Any(entity.Attributes.ContainsKey);
         }
 
         private static MethodInfo GetPluginMethod(Entity pluginEntity)
@@ -213,7 +282,10 @@ namespace FakeXrmEasy
                 return primaryObjectTypeCode == null || entityTypeCode.HasValue && (int)primaryObjectTypeCode.Value == entityTypeCode.Value;
             });
 
-            // Todo: Filter on attributes
+            if (method == "Update")
+            {
+                plugins = plugins.Where(p => PassesFilteringAttributes(p, entity));
+            }
 
             return plugins;
         }

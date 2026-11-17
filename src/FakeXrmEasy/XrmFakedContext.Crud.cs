@@ -140,13 +140,15 @@ namespace FakeXrmEasy
             if (Data.ContainsKey(e.LogicalName) &&
                 Data[e.LogicalName].ContainsKey(e.Id))
             {
+                var cachedEntity = Data[e.LogicalName][e.Id];
+                var preImageSource = this.UsePipelineSimulation ? cachedEntity.Clone(cachedEntity.GetType()) : null;
+
                 if (this.UsePipelineSimulation)
                 {
-                    ExecutePipelineStage("Update", ProcessingStepStage.Preoperation, ProcessingStepMode.Synchronous, e);
+                    ExecutePipelineStage("Update", ProcessingStepStage.Preoperation, ProcessingStepMode.Synchronous, e, preImageSource);
                 }
 
                 // Add as many attributes to the entity as the ones received (this will keep existing ones)
-                var cachedEntity = Data[e.LogicalName][e.Id];
                 foreach (var sAttributeName in e.Attributes.Keys.ToList())
                 {
                     var attribute = e[sAttributeName];
@@ -175,10 +177,11 @@ namespace FakeXrmEasy
 
                 if (this.UsePipelineSimulation)
                 {
-                    ExecutePipelineStage("Update", ProcessingStepStage.Postoperation, ProcessingStepMode.Synchronous, e);
+                    var postImageSource = cachedEntity.Clone(cachedEntity.GetType());
+                    ExecutePipelineStage("Update", ProcessingStepStage.Postoperation, ProcessingStepMode.Synchronous, e, preImageSource, postImageSource);
 
                     var clone = e.Clone(e.GetType());
-                    ExecutePipelineStage("Update", ProcessingStepStage.Postoperation, ProcessingStepMode.Asynchronous, clone);
+                    ExecutePipelineStage("Update", ProcessingStepStage.Postoperation, ProcessingStepMode.Asynchronous, clone, preImageSource, postImageSource);
                 }
             }
             else
@@ -260,9 +263,11 @@ namespace FakeXrmEasy
             if (this.Data.ContainsKey(er.LogicalName) && this.Data[er.LogicalName] != null &&
                 this.Data[er.LogicalName].ContainsKey(er.Id))
             {
+                var preImageSource = this.UsePipelineSimulation ? this.Data[er.LogicalName][er.Id].Clone() : null;
+
                 if (this.UsePipelineSimulation)
                 {
-                    ExecutePipelineStage("Delete", ProcessingStepStage.Preoperation, ProcessingStepMode.Synchronous, er);
+                    ExecutePipelineStage("Delete", ProcessingStepStage.Preoperation, ProcessingStepMode.Synchronous, er, preImageSource);
                 }
 
                 // Entity found => return only the subset of columns specified or all of them
@@ -270,8 +275,8 @@ namespace FakeXrmEasy
 
                 if (this.UsePipelineSimulation)
                 {
-                    ExecutePipelineStage("Delete", ProcessingStepStage.Postoperation, ProcessingStepMode.Synchronous, er);
-                    ExecutePipelineStage("Delete", ProcessingStepStage.Postoperation, ProcessingStepMode.Asynchronous, er);
+                    ExecutePipelineStage("Delete", ProcessingStepStage.Postoperation, ProcessingStepMode.Synchronous, er, preImageSource);
+                    ExecutePipelineStage("Delete", ProcessingStepStage.Postoperation, ProcessingStepMode.Asynchronous, er, preImageSource);
                 }
             }
             else
@@ -438,8 +443,9 @@ namespace FakeXrmEasy
 
             if (usePluginPipeline)
             {
-                ExecutePipelineStage("Create", ProcessingStepStage.Postoperation, ProcessingStepMode.Synchronous, e);
-                ExecutePipelineStage("Create", ProcessingStepStage.Postoperation, ProcessingStepMode.Asynchronous, e);
+                var postImageSource = e.Clone(e.GetType());
+                ExecutePipelineStage("Create", ProcessingStepStage.Postoperation, ProcessingStepMode.Synchronous, e, null, postImageSource);
+                ExecutePipelineStage("Create", ProcessingStepStage.Postoperation, ProcessingStepMode.Asynchronous, e, null, postImageSource);
             }
         }
 
