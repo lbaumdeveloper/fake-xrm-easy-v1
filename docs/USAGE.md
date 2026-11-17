@@ -27,7 +27,7 @@ Plugins and workflow activities for v9 run on .NET Framework, so the test projec
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="__COMPANY__.FakeXrmEasy.v9" Version="1.59.0" />
+    <PackageReference Include="Reforged.FakeXrmEasy.v9" Version="1.59.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="all" />

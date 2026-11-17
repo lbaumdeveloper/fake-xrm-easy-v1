@@ -34,7 +34,7 @@ To consume the package, add the registry as a NuGet source:
 
 ```
 dotnet nuget add source "https://<gitlab-host>/api/v4/projects/<project-id>/packages/nuget/index.json" --name gitlab --username <user> --password <token>
-dotnet add package __COMPANY__.FakeXrmEasy.v9
+dotnet add package Reforged.FakeXrmEasy.v9
 ```
 
 ## Usage
