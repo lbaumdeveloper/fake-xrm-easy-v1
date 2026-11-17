@@ -16,7 +16,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var account1 = new Account
             {
@@ -64,7 +64,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var account1 = new Account
             {
@@ -135,7 +135,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var account1 = new Account
             {
@@ -183,7 +183,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var account1 = new Account
             {
@@ -221,7 +221,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
 
             Assert.True(response.IsFaulted);
             Assert.NotEmpty(response.Responses);
-            Assert.Equal(1, response.Responses.Count);
+            Assert.Single(response.Responses);
 
             Assert.NotNull(service.Retrieve(Account.EntityLogicalName, account1.Id, new ColumnSet(true)));
         }
@@ -231,7 +231,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var account1 = new Account
             {
@@ -282,7 +282,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var account1 = new Account
             {
@@ -333,7 +333,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
             Assert.True(response.IsFaulted);
             Assert.NotEmpty(response.Responses);
 
-            Assert.True(response.Responses.Any(resp => resp.Fault != null));
+            Assert.Contains(response.Responses, resp => resp.Fault != null);
 
             Assert.NotNull(service.Retrieve(Account.EntityLogicalName, account1.Id, new ColumnSet(true)));
             Assert.NotNull(service.Retrieve(Account.EntityLogicalName, account3.Id, new ColumnSet(true)));
@@ -344,7 +344,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var account1 = new Account
             {
@@ -395,7 +395,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.ExecuteMultipleRequestTests
             Assert.True(response.IsFaulted);
             Assert.NotEmpty(response.Responses);
 
-            Assert.True(response.Responses.Any(resp => resp.Fault != null));
+            Assert.Contains(response.Responses, resp => resp.Fault != null);
 
             Assert.NotNull(service.Retrieve(Account.EntityLogicalName, account1.Id, new ColumnSet(true)));
             Assert.Throws<FaultException<OrganizationServiceFault>>(() => service.Retrieve(Account.EntityLogicalName, account3.Id, new ColumnSet(true)));

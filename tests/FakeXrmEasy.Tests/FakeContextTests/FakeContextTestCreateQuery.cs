@@ -17,7 +17,7 @@ namespace FakeXrmEasy.Tests
             var context = new XrmFakedContext();
             context.ProxyTypesAssembly = Assembly.GetExecutingAssembly();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var guid = Guid.NewGuid();
             var data = new List<Entity>() {
@@ -39,7 +39,7 @@ namespace FakeXrmEasy.Tests
             var context = new XrmFakedContext();
             context.ProxyTypesAssembly = Assembly.GetExecutingAssembly();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var guid = Guid.NewGuid();
             var data = new List<Entity>() {
@@ -63,13 +63,13 @@ namespace FakeXrmEasy.Tests
             var context = new XrmFakedContext();
             context.ProxyTypesAssembly = Assembly.GetExecutingAssembly();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             //Find the contact
             var contact = (from c in context.CreateQuery<Contact>()
                            select c).ToList();
 
-            Assert.Equal(contact.Count, 0);
+            Assert.Empty(contact);
         }
 
         [Fact]
@@ -77,13 +77,13 @@ namespace FakeXrmEasy.Tests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             //Find the contact
             var contact = (from c in context.CreateQuery("contact")
                            select c).ToList();
 
-            Assert.Equal(contact.Count, 0);
+            Assert.Empty(contact);
         }
 
         [Fact]
@@ -91,13 +91,13 @@ namespace FakeXrmEasy.Tests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             //Find the contact
             var contact = (from c in context.CreateQuery("contact")
                            select c).ToList();
 
-            Assert.Equal(contact.Count, 0);
+            Assert.Empty(contact);
         }
 
         [Fact]

@@ -34,7 +34,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.UpsertRequestTests
 
             var contactCreated = context.CreateQuery<Contact>().FirstOrDefault();
 
-            Assert.Equal(true, response.RecordCreated);
+            Assert.True(response.RecordCreated);
             Assert.NotNull(contactCreated);
         }
 
@@ -68,7 +68,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.UpsertRequestTests
             var response = (UpsertResponse)service.Execute(request);
             var contactUpdated = context.CreateQuery<Contact>().FirstOrDefault();
 
-            Assert.Equal(false, response.RecordCreated);
+            Assert.False(response.RecordCreated);
             Assert.Equal("FakeXrm2", contactUpdated.FirstName);
         }
 
@@ -103,7 +103,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.UpsertRequestTests
 
             var response = (UpsertResponse)service.Execute(request);
 
-            Assert.Equal(true, response.RecordCreated);
+            Assert.True(response.RecordCreated);
         }
 
         [Fact]
@@ -148,7 +148,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.UpsertRequestTests
 
             var response = (UpsertResponse)service.Execute(request);
 
-            Assert.Equal(false, response.RecordCreated);
+            Assert.False(response.RecordCreated);
         }
     }
 }

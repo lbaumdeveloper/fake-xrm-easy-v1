@@ -97,7 +97,7 @@ namespace FakeXrmEasy.Tests
                          select t).ToList();
 
             Assert.True(tasks.Count == 1);
-            Assert.True(tasks[0].Subject.Equals("Send e-mail to the new customer."));
+            Assert.Equal("Send e-mail to the new customer.", tasks[0].Subject);
             Assert.True(tasks[0].RegardingObjectId != null && tasks[0].RegardingObjectId.Id.Equals(guid1));
         }
 
@@ -312,7 +312,9 @@ namespace FakeXrmEasy.Tests
             preEntityImages.Add("PreImage", new Entity());
 
             // act
+#pragma warning disable CS0612
             context.ExecutePluginWithTargetAndPreEntityImages<EntityImagesPlugin>(target, preEntityImages);
+#pragma warning restore CS0612
 
             // assert
             EntityImageCollection postImagesReturned = target["PostEntityImages"] as EntityImageCollection;
@@ -323,7 +325,7 @@ namespace FakeXrmEasy.Tests
             EntityImageCollection preImagesReturned = target["PreEntityImages"] as EntityImageCollection;
 
             Assert.Equal(1, preImagesReturned?.Count);
-            Assert.IsType(typeof(Entity), preImagesReturned["PreImage"]);
+            Assert.IsType<Entity>(preImagesReturned["PreImage"]);
         }
 
         [Fact]
@@ -337,7 +339,9 @@ namespace FakeXrmEasy.Tests
             postEntityImages.Add("PostImage", new Entity());
 
             // act
+#pragma warning disable CS0612
             context.ExecutePluginWithTargetAndPostEntityImages<EntityImagesPlugin>(target, postEntityImages);
+#pragma warning restore CS0612
 
             // assert
             EntityImageCollection preImagesReturned = target["PreEntityImages"] as EntityImageCollection;
@@ -348,7 +352,7 @@ namespace FakeXrmEasy.Tests
             EntityImageCollection postImagesReturned = target["PostEntityImages"] as EntityImageCollection;
 
             Assert.Equal(1, postImagesReturned?.Count);
-            Assert.IsType(typeof(Entity), postImagesReturned["PostImage"]);
+            Assert.IsType<Entity>(postImagesReturned["PostImage"]);
         }
     }
 }

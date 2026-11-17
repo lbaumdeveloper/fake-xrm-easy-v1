@@ -66,7 +66,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.DisassociateRequestTests
                 Entity2LogicalName = "team"
             });
 
-            var orgSvc = context.GetFakedOrganizationService();
+            var orgSvc = context.GetOrganizationService();
             orgSvc.Disassociate("team", teamId, new Relationship("teammembership"),
                 new EntityReferenceCollection(new List<EntityReference> { new EntityReference("systemuser", userId), new EntityReference("systemuser", user2Id) }));
 
@@ -88,13 +88,13 @@ namespace FakeXrmEasy.Tests.FakeContextTests.DisassociateRequestTests
                                          where tu.TeamId == user2Id
                                          && tu.SystemUserId == teamId
                                          select tu).ToList();
-                Assert.Equal(1, wrongAssociation2.Count());
+                Assert.Single(wrongAssociation2);
 
                 var wrongAssociation = (from tu in ctx.TeamMembershipSet
                                         where tu.TeamId == userId
                                         && tu.SystemUserId == teamId
                                         select tu).ToList();
-                Assert.Equal(1, wrongAssociation.Count());
+                Assert.Single(wrongAssociation);
             }
         }
 
@@ -160,7 +160,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.DisassociateRequestTests
                 Entity2LogicalName = "team"
             });
 
-            var orgSvc = context.GetFakedOrganizationService();
+            var orgSvc = context.GetOrganizationService();
             orgSvc.Disassociate("systmuser", userId, new Relationship("teammembership"),
                 new EntityReferenceCollection(new List<EntityReference> { new EntityReference("team", teamId), new EntityReference("team", team2Id) }));
 
@@ -182,13 +182,13 @@ namespace FakeXrmEasy.Tests.FakeContextTests.DisassociateRequestTests
                                          where tu.TeamId == userId
                                          && tu.SystemUserId == team2Id
                                          select tu).ToList();
-                Assert.Equal(1, wrongAssociation1.Count());
+                Assert.Single(wrongAssociation1);
 
                 var wrongAssociation = (from tu in ctx.TeamMembershipSet
                                         where tu.TeamId == userId
                                         && tu.SystemUserId == teamId
                                         select tu).ToList();
-                Assert.Equal(1, wrongAssociation.Count());
+                Assert.Single(wrongAssociation);
             }
         }
     }
