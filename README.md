@@ -24,6 +24,7 @@ dotnet test
 |------|---------|
 | `src/FakeXrmEasy` | The library |
 | `tests/FakeXrmEasy.Tests` | xUnit tests |
+| `docs` | [Usage guide](docs/USAGE.md) |
 
 ## CI and releases
 
@@ -38,32 +39,35 @@ dotnet add package __COMPANY__.FakeXrmEasy.v9
 
 ## Usage
 
-```csharp
-var context = new XrmFakedContext();
-var account = new Entity("account") { Id = Guid.NewGuid(), ["name"] = "Contoso" };
-context.Initialize(new[] { account });
-
-context.ExecutePluginWithTarget<MyPlugin>(account);
-var service = context.GetOrganizationService();
-```
-
-### Pipeline simulation with images
+A test creates an `XrmFakedContext`, seeds it with records, runs the code under test and asserts on the in-memory data:
 
 ```csharp
-var context = new XrmFakedContext { UsePipelineSimulation = true };
-context.RegisterPluginStep<MyPlugin, Account>("Update", ProcessingStepStage.Postoperation,
-    filteringAttributes: new[] { "name" },
-    images: new[] { new PluginStepImage("PreImage", ProcessingStepImageType.PreImage, "name", "accountnumber") });
+[Fact]
+public void Post_create_creates_follow_up_task()
+{
+    var context = new XrmFakedContext();
+    var account = new Entity("account") { Id = Guid.NewGuid(), ["name"] = "Contoso Ltd" };
+
+    context.ExecutePluginWithTarget<AccountFollowUpPlugin>(account, "Create", (int)ProcessingStepStage.Postoperation);
+
+    var task = context.CreateQuery("task").Single();
+    Assert.Equal("Welcome call for Contoso Ltd", task["subject"]);
+}
 ```
 
-### Rollup fields
+Code that only needs an `IOrganizationService` gets it from `context.GetOrganizationService()`.
 
-```csharp
-context.RegisterRollupField("account", "new_openrevenue",
-    RollupFields.Sum("opportunity", "parentaccountid", "estimatedvalue"));
-```
+The [usage guide](docs/USAGE.md) has tested examples for:
 
-`CalculateRollupFieldRequest` then calculates and stores the value. Pass your own `(service, target) => value` function for anything the built-in aggregates (Count, Sum, Avg, Min, Max) don't cover.
+- [Setting up a test project and the faked context](docs/USAGE.md#1-set-up-a-test-project): seeding data, `CallerId`, early-bound entities
+- [Plugins](docs/USAGE.md#3-testing-plugins): target, full execution context, pre/post images, exceptions, tracing, configuration
+- [Pipeline simulation](docs/USAGE.md#4-pipeline-simulation): `RegisterPluginStep` with images and filtering attributes
+- [Custom workflow activities](docs/USAGE.md#5-testing-custom-workflow-activities): inputs, outputs, workflow context
+- [Queries](docs/USAGE.md#6-queries): QueryExpression, FetchXML with aggregates, LINQ, user and team operators
+- [Built-in messages](docs/USAGE.md#7-built-in-messages): SetState, Assign, SendEmail, Associate, ExecuteMultiple, WhoAmI
+- [Rollup fields](docs/USAGE.md#8-rollup-fields): `RegisterRollupField` with `RollupFields.Count/Sum/Avg/Min/Max`
+- [Custom fakes](docs/USAGE.md#9-custom-fakes): custom actions, execution mocks, replacing built-in executors
+- [Troubleshooting](docs/USAGE.md#10-troubleshooting)
 
 ## License
 
