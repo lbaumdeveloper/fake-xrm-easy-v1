@@ -136,7 +136,7 @@ namespace FakeXrmEasy
                     plugin.Execute(fakedServiceProvider);
                 });
 
-            fakedPlugin.Execute(fakedServiceProvider); //Execute the plugin
+            ExecuteTrackingDepth(ctx, () => fakedPlugin.Execute(fakedServiceProvider));
             return fakedPlugin;
         }
 
@@ -159,7 +159,7 @@ namespace FakeXrmEasy
                     plugin.Execute(fakedServiceProvider);
                 });
 
-            fakedPlugin.Execute(fakedServiceProvider); //Execute the plugin
+            ExecuteTrackingDepth(ctx, () => fakedPlugin.Execute(fakedServiceProvider));
             return fakedPlugin;
         }
 
@@ -202,7 +202,7 @@ namespace FakeXrmEasy
                     plugin.Execute(fakedServiceProvider);
                 });
 
-            fakedPlugin.Execute(fakedServiceProvider); //Execute the plugin
+            ExecuteTrackingDepth(plugCtx, () => fakedPlugin.Execute(fakedServiceProvider));
             return fakedPlugin;
         }
 
@@ -386,6 +386,19 @@ namespace FakeXrmEasy
         }
 
         public Entity EntityDataSourceRetriever { get; set; }
+
+        private void ExecuteTrackingDepth(XrmFakedPluginExecutionContext ctx, Action execute)
+        {
+            _pipelineContexts.Push(ctx);
+            try
+            {
+                execute();
+            }
+            finally
+            {
+                _pipelineContexts.Pop();
+            }
+        }
 
         public XrmFakedTracingService GetFakeTracingService()
         {
