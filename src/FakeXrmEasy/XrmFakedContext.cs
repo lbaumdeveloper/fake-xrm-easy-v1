@@ -103,7 +103,7 @@ namespace FakeXrmEasy
 
             FakeMessageExecutors = Assembly.GetExecutingAssembly()
                 .GetTypes()
-                .Where(t => t.GetInterfaces().Contains(typeof(IFakeMessageExecutor)))
+                .Where(t => t.GetInterfaces().Contains(typeof(IFakeMessageExecutor)) && !t.IsAbstract && t.GetConstructor(Type.EmptyTypes) != null)
                 .Select(t => Activator.CreateInstance(t) as IFakeMessageExecutor)
                 .ToDictionary(t => t.GetResponsibleRequestType(), t => t);
 
@@ -213,6 +213,25 @@ namespace FakeXrmEasy
                 GenericFakeMessageExecutors.Add(message, executor);
             else
                 GenericFakeMessageExecutors[message] = executor;
+        }
+
+        /// <summary>
+        /// Registers a custom action by its unique name. The handler maps the request's input parameters to the response's output parameters.
+        /// Works for plain OrganizationRequests and for generated early-bound request classes.
+        /// </summary>
+        public void RegisterCustomAction(string actionName, Func<ParameterCollection, ParameterCollection> handler)
+        {
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+            RegisterCustomAction(actionName, (service, request) => handler(request.Parameters));
+        }
+
+        /// <summary>
+        /// Registers a custom action by its unique name. The handler receives the organization service and the request and returns the output parameters.
+        /// </summary>
+        public void RegisterCustomAction(string actionName, Func<IOrganizationService, OrganizationRequest, ParameterCollection> handler)
+        {
+            if (string.IsNullOrWhiteSpace(actionName)) throw new ArgumentNullException(nameof(actionName));
+            AddGenericFakeMessageExecutor(actionName, new CustomActionExecutor(actionName, handler ?? throw new ArgumentNullException(nameof(handler))));
         }
 
         public void RemoveGenericFakeMessageExecutor(string message)
@@ -338,7 +357,7 @@ namespace FakeXrmEasy
                     && context.FakeMessageExecutors[req.GetType()].CanExecute(req))
                     return context.FakeMessageExecutors[req.GetType()].Execute(req, context);
 
-                if (req.GetType() == typeof(OrganizationRequest)
+                if (req.RequestName != null
                     && context.GenericFakeMessageExecutors.ContainsKey(req.RequestName))
                     return context.GenericFakeMessageExecutors[req.RequestName].Execute(req, context);
 
