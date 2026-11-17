@@ -3,9 +3,9 @@
     <RootNamespace>FakeXrmEasy</RootNamespace>
     <AssemblyName>FakeXrmEasy</AssemblyName>
     <Version>1.59.0</Version>
-    <PackageId>__COMPANY__.FakeXrmEasy.v9</PackageId>
-    <Authors>__COMPANY__</Authors>
-    <Company>__COMPANY__</Company>
+    <PackageId>Reforged.FakeXrmEasy.v9</PackageId>
+    <Authors>Reforged</Authors>
+    <Company>Reforged</Company>
     <Description>In-memory fake of IOrganizationService for unit testing plugins and custom workflow activities on Dynamics 365 CE on-premises v9. Fork of FakeXrmEasy v1.</Description>
     <PackageTags>dynamics;crm;xrm;dataverse;testing;fake;plugins</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
