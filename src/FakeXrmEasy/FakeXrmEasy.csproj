@@ -10,6 +10,8 @@
     <PackageTags>dynamics;crm;xrm;dataverse;testing;fake;plugins</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/lbaumdeveloper/fake-xrm-easy-v1</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <Copyright>Copyright (c) 2014-2016 Jordi Montana and contributors</Copyright>
   </PropertyGroup>
 

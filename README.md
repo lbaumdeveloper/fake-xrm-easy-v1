@@ -28,9 +28,25 @@ dotnet test
 
 ## CI and releases
 
-`.gitlab-ci.yml` packs the library on a Linux runner, runs the tests on a Windows runner and, for tags like `v1.59.0`, publishes the package to this project's GitLab package registry. Set the `WINDOWS_RUNNER_TAG` variable if your Windows runner uses a different tag.
+Two equivalent pipelines exist. Both pack on Linux, run the tests on Windows and publish the package for tags like `v1.59.0`:
 
-To consume the package, add the registry as a NuGet source:
+| Pipeline | File | Publishes to |
+|----------|------|--------------|
+| GitHub Actions | `.github/workflows/ci.yml` | GitHub Packages (`https://nuget.pkg.github.com/lbaumdeveloper/index.json`) |
+| GitLab CI | `.gitlab-ci.yml` | The GitLab project's package registry. Set `WINDOWS_RUNNER_TAG` if your Windows runner uses a different tag. |
+
+### Install from GitHub Packages
+
+GitHub's NuGet registry requires authentication even for packages of public repositories. Create a personal access token (classic) with the `read:packages` scope, then:
+
+```
+dotnet nuget add source "https://nuget.pkg.github.com/lbaumdeveloper/index.json" --name github --username <github-user> --password <token> --store-password-in-clear-text
+dotnet add package Reforged.FakeXrmEasy.v9
+```
+
+In CI, a GitHub Actions workflow in another repository can use a token with `read:packages`; within this repository `GITHUB_TOKEN` is enough.
+
+### Install from GitLab
 
 ```
 dotnet nuget add source "https://<gitlab-host>/api/v4/projects/<project-id>/packages/nuget/index.json" --name gitlab --username <user> --password <token>

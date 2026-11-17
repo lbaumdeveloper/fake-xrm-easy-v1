@@ -43,7 +43,7 @@ Plugins and workflow activities for v9 run on .NET Framework, so the test projec
 </Project>
 ```
 
-See the [README](../README.md#ci-and-releases) for adding the GitLab package source. MSTest and NUnit work the same way; FakeXrmEasy does not depend on a test framework.
+See the [README](../README.md#ci-and-releases) for adding the GitHub Packages or GitLab package source. MSTest and NUnit work the same way; FakeXrmEasy does not depend on a test framework.
 
 Use one `XrmFakedContext` per test. It holds all records in memory, so sharing it between tests leaks state.
 
