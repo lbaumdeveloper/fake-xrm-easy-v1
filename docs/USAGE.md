@@ -43,7 +43,31 @@ Plugins and workflow activities for v9 run on .NET Framework, so the test projec
 </Project>
 ```
 
-See the [README](../README.md#ci-and-releases) for adding the GitHub Packages or GitLab package source. MSTest and NUnit work the same way; FakeXrmEasy does not depend on a test framework.
+### Package source
+
+The package is published to GitHub Packages. GitHub's NuGet registry needs authentication even for public packages: create a personal access token (classic) with the `read:packages` scope at GitHub > Settings > Developer settings > Personal access tokens.
+
+Put a `nuget.config` next to your solution and keep the token out of it by reading it from environment variables:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+    <add key="github" value="https://nuget.pkg.github.com/lbaumdeveloper/index.json" />
+  </packageSources>
+  <packageSourceCredentials>
+    <github>
+      <add key="Username" value="%GITHUB_PACKAGES_USER%" />
+      <add key="ClearTextPassword" value="%GITHUB_PACKAGES_TOKEN%" />
+    </github>
+  </packageSourceCredentials>
+</configuration>
+```
+
+Set `GITHUB_PACKAGES_USER` to your GitHub user name and `GITHUB_PACKAGES_TOKEN` to the token, locally and as CI secrets. In a GitHub Actions workflow of this repository the built-in `GITHUB_TOKEN` (with `packages: read`) also works; other repositories need a token with `read:packages`.
+
+Alternatively add the source once per machine from the command line, as shown in the [README](../README.md#install-from-github-packages). For the GitLab registry see the [README](../README.md#install-from-gitlab). MSTest and NUnit work the same way; FakeXrmEasy does not depend on a test framework.
 
 Use one `XrmFakedContext` per test. It holds all records in memory, so sharing it between tests leaks state.
 
