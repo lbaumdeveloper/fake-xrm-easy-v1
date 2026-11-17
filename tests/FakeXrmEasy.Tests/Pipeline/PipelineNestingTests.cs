@@ -8,6 +8,7 @@ using Xunit;
 
 namespace FakeXrmEasy.Tests.Pipeline
 {
+    [Collection(nameof(ContextCapturePlugin))]
     public class PipelineNestingTests
     {
         private readonly XrmFakedContext _context;
