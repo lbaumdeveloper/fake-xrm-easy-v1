@@ -47,6 +47,24 @@ context.ExecutePluginWithTarget<MyPlugin>(account);
 var service = context.GetOrganizationService();
 ```
 
+### Pipeline simulation with images
+
+```csharp
+var context = new XrmFakedContext { UsePipelineSimulation = true };
+context.RegisterPluginStep<MyPlugin, Account>("Update", ProcessingStepStage.Postoperation,
+    filteringAttributes: new[] { "name" },
+    images: new[] { new PluginStepImage("PreImage", ProcessingStepImageType.PreImage, "name", "accountnumber") });
+```
+
+### Rollup fields
+
+```csharp
+context.RegisterRollupField("account", "new_openrevenue",
+    RollupFields.Sum("opportunity", "parentaccountid", "estimatedvalue"));
+```
+
+`CalculateRollupFieldRequest` then calculates and stores the value. Pass your own `(service, target) => value` function for anything the built-in aggregates (Count, Sum, Avg, Min, Max) don't cover.
+
 ## License
 
 MIT, see [LICENSE.md](LICENSE.md).
