@@ -201,3 +201,10 @@ test/*
 
 #Visual Studio
 .vs/
+
+# CI
+.nuget/packages/
+.dotnet/
+artifacts/
+TestResults/
+dotnet-install.ps1
