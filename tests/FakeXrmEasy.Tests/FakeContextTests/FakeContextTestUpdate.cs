@@ -23,7 +23,7 @@ namespace FakeXrmEasy.Tests
             var service = context.GetOrganizationService();
 
             var ex = Assert.Throws<InvalidOperationException>(() => service.Update(null));
-            Assert.Equal(ex.Message, "The entity must not be null");
+            Assert.Equal("The entity must not be null", ex.Message);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace FakeXrmEasy.Tests
         public void When_updating_an_optionsetvaluecollection_the_context_should_reflect_changes()
         {
             var context = new XrmFakedContext();
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var e = new Entity("contact") { Id = Guid.Empty };
             e["new_multiselectattribute"] = new OptionSetValueCollection() { new OptionSetValue(1) };
@@ -193,7 +193,7 @@ namespace FakeXrmEasy.Tests
 
             //Make sure existing entity still maintains AccountNumber property
             var account = context.CreateQuery<Account>().FirstOrDefault();
-            Assert.Equal(account.AccountNumber, "69");
+            Assert.Equal("69", account.AccountNumber);
         }
 
         [Fact]
@@ -221,7 +221,7 @@ namespace FakeXrmEasy.Tests
 
             //Make other account wasn't updated
             var account = context.CreateQuery<Account>().Where(e => e.Id == otherExistingAccount.Id).FirstOrDefault();
-            Assert.Equal(account.Name, "Devil Customer");
+            Assert.Equal("Devil Customer", account.Name);
         }
 
         [Fact]
@@ -251,7 +251,7 @@ namespace FakeXrmEasy.Tests
 
             //Make other account wasn't updated
             var account = context.CreateQuery<Account>().Where(e => e.Id == existingAccount.Id).FirstOrDefault();
-            Assert.Equal(account.Name, "Super Great Customer Name Updated!");
+            Assert.Equal("Super Great Customer Name Updated!", account.Name);
         }
 
         [Fact]

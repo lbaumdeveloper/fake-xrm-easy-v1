@@ -15,7 +15,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.WinOpportunityRequestTests
         {
             var context = new XrmFakedContext();
             context.ProxyTypesAssembly = Assembly.GetExecutingAssembly();
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             var opportunity = new Opportunity()
             {
@@ -38,7 +38,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.WinOpportunityRequestTests
                        where op.Id == opportunity.Id
                        select op).FirstOrDefault();
 
-            Assert.Equal(opp.StatusCode.Value, (int)OpportunityState.Won);
+            Assert.Equal((int)OpportunityState.Won, opp.StatusCode.Value);
         }
     }
 }

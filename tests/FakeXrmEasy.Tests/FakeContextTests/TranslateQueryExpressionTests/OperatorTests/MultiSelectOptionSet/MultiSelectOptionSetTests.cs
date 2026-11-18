@@ -14,7 +14,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -27,7 +27,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2", entities[0]["firstname"]);
         }
 
@@ -36,7 +36,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -49,7 +49,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2", entities[0]["firstname"]);
         }
 
@@ -58,7 +58,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
 
             var qe = new QueryExpression("contact");
@@ -72,7 +72,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
 
             var qe = new QueryExpression("contact");
@@ -86,7 +86,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -99,7 +99,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2", entities[0]["firstname"]);
         }
 
@@ -108,7 +108,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2), new OptionSetValue(3) } });
 
             var qe = new QueryExpression("contact");
@@ -122,7 +122,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2), new OptionSetValue(3) } });
 
             var qe = new QueryExpression("contact");
@@ -136,7 +136,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -158,7 +158,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -180,7 +180,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -193,7 +193,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2", entities[0]["firstname"]);
         }
 
@@ -202,7 +202,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -215,7 +215,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2", entities[0]["firstname"]);
         }
 
@@ -224,7 +224,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
 
             var qe = new QueryExpression("contact");
@@ -238,7 +238,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
 
             var qe = new QueryExpression("contact");
@@ -252,7 +252,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -265,7 +265,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2", entities[0]["firstname"]);
         }
 
@@ -274,7 +274,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -287,7 +287,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2,3", entities[0]["firstname"]);
         }
 
@@ -296,7 +296,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -309,7 +309,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("1,2,3", entities[0]["firstname"]);
         }
 
@@ -318,7 +318,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -331,7 +331,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("1,2,3", entities[0]["firstname"]);
         }
 
@@ -340,7 +340,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -353,7 +353,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2,3", entities[0]["firstname"]);
         }
 
@@ -362,7 +362,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -375,7 +375,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2,3", entities[0]["firstname"]);
         }
 
@@ -384,7 +384,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -397,7 +397,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("2,3", entities[0]["firstname"]);
         }
 
@@ -406,7 +406,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -429,7 +429,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -451,7 +451,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -473,7 +473,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -495,7 +495,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
 
             var qe = new QueryExpression("contact");
@@ -509,7 +509,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
 
             var qe = new QueryExpression("contact");
@@ -523,7 +523,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -545,7 +545,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -567,7 +567,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -589,7 +589,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -611,7 +611,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -633,7 +633,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -655,7 +655,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });
@@ -668,7 +668,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
 
             var entities = service.RetrieveMultiple(qe).Entities;
 
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("null", entities[0]["firstname"]);
         }
 
@@ -677,7 +677,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests.Opera
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "1,2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(1), new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2) } });
             service.Create(new Contact { FirstName = "2,3", new_MultiSelectAttribute = new OptionSetValueCollection() { new OptionSetValue(2), new OptionSetValue(3) } });

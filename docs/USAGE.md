@@ -43,7 +43,31 @@ Plugins and workflow activities for v9 run on .NET Framework, so the test projec
 </Project>
 ```
 
-See the [README](../README.md#ci-and-releases) for adding the GitLab package source. MSTest and NUnit work the same way; FakeXrmEasy does not depend on a test framework.
+### Package source
+
+The package is published to GitHub Packages. GitHub's NuGet registry needs authentication even for public packages: create a personal access token (classic) with the `read:packages` scope at GitHub > Settings > Developer settings > Personal access tokens.
+
+Put a `nuget.config` next to your solution and keep the token out of it by reading it from environment variables:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+    <add key="github" value="https://nuget.pkg.github.com/lbaumdeveloper/index.json" />
+  </packageSources>
+  <packageSourceCredentials>
+    <github>
+      <add key="Username" value="%GITHUB_PACKAGES_USER%" />
+      <add key="ClearTextPassword" value="%GITHUB_PACKAGES_TOKEN%" />
+    </github>
+  </packageSourceCredentials>
+</configuration>
+```
+
+Set `GITHUB_PACKAGES_USER` to your GitHub user name and `GITHUB_PACKAGES_TOKEN` to the token, locally and as CI secrets. In a GitHub Actions workflow of this repository the built-in `GITHUB_TOKEN` (with `packages: read`) also works; other repositories need a token with `read:packages`.
+
+Alternatively add the source once per machine from the command line, as shown in the [README](../README.md#install-from-github-packages). For the GitLab registry see the [README](../README.md#install-from-gitlab). MSTest and NUnit work the same way; FakeXrmEasy does not depend on a test framework.
 
 Use one `XrmFakedContext` per test. It holds all records in memory, so sharing it between tests leaks state.
 
@@ -294,7 +318,7 @@ If your plugin needs constructor dependencies, create the instance yourself and 
 
 Executing a plugin directly tests it in isolation. Pipeline simulation instead runs registered steps when your code calls `Create`, `Update` or `Delete` on the service, which is useful for testing plugin chains or code that relies on plugins.
 
-Steps for a specific entity need early-bound classes, because the step filter uses the class's `EntityTypeCode`.
+Steps for a specific entity need early-bound classes, because the step filter uses the class's `EntityTypeCode`. Once the proxy types assembly is known (`RegisterPluginStep<TPlugin, TEntity>` sets it), late-bound `Entity` targets match those steps too.
 
 ```csharp
 var context = new XrmFakedContext { UsePipelineSimulation = true };
@@ -337,7 +361,22 @@ Which images a stage receives:
 | Update | all stages | post-operation only |
 | Delete | all stages | no |
 
-Other optional arguments of `RegisterPluginStep` are `mode` (synchronous or asynchronous) and `rank` (execution order within a stage). Asynchronous steps run immediately after the synchronous post-operation steps. Only the pre-operation and post-operation stages are simulated; pre-validation steps are not run. Use `RegisterPluginStep<TPlugin>(message, ..., primaryEntityTypeCode: null)` to register a step for all entities.
+Other optional arguments of `RegisterPluginStep` are `mode` (synchronous or asynchronous) and `rank` (execution order within a stage). Asynchronous steps run immediately after the synchronous post-operation steps. Use `RegisterPluginStep<TPlugin>(message, ..., primaryEntityTypeCode: null)` to register a step for all entities.
+
+### Stages, nesting and infinite loops
+
+Pre-validation, pre-operation and post-operation steps run in that order. When a plugin's own service call triggers another step, that step gets `Depth` + 1, the calling plugin's context as `ParentContext`, and the same `CorrelationId`, so depth guards can be tested:
+
+```csharp
+var context = new XrmFakedContext { UsePipelineSimulation = true };
+context.RegisterPluginStep<CreateContactForAccountPlugin, Account>("Create");
+context.RegisterPluginStep<ContactPlugin, Contact>("Create");
+
+context.GetOrganizationService().Create(new Account());
+// ContactPlugin runs with Depth == 2 and ParentContext.MessageName == "Create"
+```
+
+More than `MaxPipelineDepth` nested executions (default 8) throw the infinite loop `FaultException<OrganizationServiceFault>`. Exceptions thrown by a registered step reach the caller unchanged.
 
 ## 5. Testing custom workflow activities
 
@@ -654,6 +693,32 @@ Assert.Equal(userId, response.UserId);
 
 `BusinessUnitId` and `OrganizationId` are only returned when a matching `systemuser` record (with `businessunitid`) exists.
 
+### Merge
+
+`MergeRequest` works for `account`, `contact`, `lead` and `incident`. It copies `UpdateContent` to the master, points every lookup that referenced the subordinate to the master, and deactivates the subordinate with `merged` and `masterid` set.
+
+```csharp
+service.Execute(new MergeRequest
+{
+    Target = new EntityReference("account", masterId),
+    SubordinateId = duplicateId,
+    UpdateContent = new Entity("account") { ["telephone1"] = "123" }
+});
+```
+
+### ExecuteWorkflow
+
+Each `ExecuteWorkflowRequest` is recorded in `context.ExecutedWorkflowRequests` and creates an `asyncoperation`. Register a workflow to also simulate what it does; a failure marks the job as failed instead of throwing, like the asynchronous server job.
+
+```csharp
+context.RegisterWorkflow(workflowId, (service, request) =>
+    service.Update(new Entity("account") { Id = request.EntityId, ["name"] = "Processed" }));
+
+service.Execute(new ExecuteWorkflowRequest { WorkflowId = workflowId, EntityId = accountId });
+
+Assert.Single(context.ExecutedWorkflowRequests);
+```
+
 ## 8. Rollup fields
 
 Rollup definitions live in CRM metadata, which the context doesn't have. Register the calculation per field, and `CalculateRollupFieldRequest` calculates and stores the value:
@@ -685,6 +750,19 @@ Assert.Equal(3500m, ((Money)response.Entity["new_openrevenue"]).Value);
 ## 9. Custom fakes
 
 Use custom fakes for custom actions, for requests that aren't implemented yet, or to force a specific response.
+
+### Custom actions with RegisterCustomAction
+
+The shortest way to fake a custom action is a handler from input to output parameters. It also matches generated early-bound request classes by their request name.
+
+```csharp
+context.RegisterCustomAction("new_CalculateDiscount", inputs => new ParameterCollection
+{
+    { "Discount", (decimal)inputs["Amount"] * 0.1m }
+});
+```
+
+Use the overload `(service, request) => outputs` when the action needs to read or write data.
 
 ### Custom actions with a message executor
 

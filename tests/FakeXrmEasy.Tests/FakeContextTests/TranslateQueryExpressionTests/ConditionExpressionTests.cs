@@ -140,13 +140,13 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests
         {
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "Jimmy" });
 
             var qe = new QueryExpression("contact");
             qe.Criteria.AddCondition("firstname", ConditionOperator.Equal, "jimmy");
 
-            Assert.Equal(1, service.RetrieveMultiple(qe).Entities.Count);
+            Assert.Single(service.RetrieveMultiple(qe).Entities);
         }
 
 
@@ -156,7 +156,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests
             //So Where clauses shouldn't affect the Select clause
             var context = new XrmFakedContext();
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
             service.Create(new Contact { FirstName = "JimmY" });
 
             var qe = new QueryExpression("contact");
@@ -164,7 +164,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests
             qe.ColumnSet = new ColumnSet(true);
 
             var entities = service.RetrieveMultiple(qe).Entities;
-            Assert.Equal(1, entities.Count);
+            Assert.Single(entities);
             Assert.Equal("JimmY", entities[0]["firstname"]);
         }
 
@@ -244,7 +244,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.TranslateQueryExpressionTests
 
             var result = fakedService.RetrieveMultiple(query).Entities;
 
-            Assert.Equal(1, result.Count());
+            Assert.Single(result);
         }
 
     }

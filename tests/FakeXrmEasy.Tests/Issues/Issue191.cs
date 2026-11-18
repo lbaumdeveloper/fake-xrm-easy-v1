@@ -36,7 +36,7 @@ namespace FakeXrmEasy.Tests.Issues
             // initialise
             var context = new XrmFakedContext();
             context.Initialize(new[] { contact, child, pet });
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             // join contact and child and pet
             var query2 = new QueryExpression("contact");
@@ -67,8 +67,8 @@ namespace FakeXrmEasy.Tests.Issues
             Console.WriteLine(count2); // returns 1 record
 
             var results = service.RetrieveMultiple(query2);
-            Assert.Equal(true, results.Entities[0].Attributes.ContainsKey("child1.contactid"));
-            Assert.Equal(true, results.Entities[0].Attributes.ContainsKey("pet1.childid")); //test fails unless link22 is Inner join
+            Assert.True(results.Entities[0].Attributes.ContainsKey("child1.contactid"));
+            Assert.True(results.Entities[0].Attributes.ContainsKey("pet1.childid")); //test fails unless link22 is Inner join
         }
     }
 }

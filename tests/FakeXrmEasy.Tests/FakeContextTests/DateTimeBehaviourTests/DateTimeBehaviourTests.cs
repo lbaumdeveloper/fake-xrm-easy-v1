@@ -38,7 +38,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests
                 }
             });
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var query = new QueryExpression(Contact.EntityLogicalName)
             {
@@ -77,7 +77,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests
                 }
             });
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var query = new QueryExpression(Contact.EntityLogicalName)
             {
@@ -118,7 +118,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests
                 }
             });
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var entity = service.Retrieve("contact", id, new ColumnSet("createdon", "birthdate")).ToEntity<Contact>();
 
@@ -154,7 +154,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests
                 }
             });
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var entity = service.Retrieve("contact", id, new ColumnSet("createdon", "birthdate")).ToEntity<Contact>();
 

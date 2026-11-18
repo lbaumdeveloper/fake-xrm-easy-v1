@@ -145,6 +145,7 @@ namespace FakeXrmEasy
 
                 if (this.UsePipelineSimulation)
                 {
+                    ExecutePipelineStage("Update", ProcessingStepStage.Prevalidation, ProcessingStepMode.Synchronous, e, preImageSource);
                     ExecutePipelineStage("Update", ProcessingStepStage.Preoperation, ProcessingStepMode.Synchronous, e, preImageSource);
                 }
 
@@ -267,6 +268,7 @@ namespace FakeXrmEasy
 
                 if (this.UsePipelineSimulation)
                 {
+                    ExecutePipelineStage("Delete", ProcessingStepStage.Prevalidation, ProcessingStepMode.Synchronous, er, preImageSource);
                     ExecutePipelineStage("Delete", ProcessingStepStage.Preoperation, ProcessingStepMode.Synchronous, er, preImageSource);
                 }
 
@@ -435,6 +437,7 @@ namespace FakeXrmEasy
 
             if (usePluginPipeline)
             {
+                ExecutePipelineStage("Create", ProcessingStepStage.Prevalidation, ProcessingStepMode.Synchronous, e);
                 ExecutePipelineStage("Create", ProcessingStepStage.Preoperation, ProcessingStepMode.Synchronous, e);
             }
 

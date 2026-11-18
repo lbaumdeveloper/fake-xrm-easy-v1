@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using FakeXrmEasy.Extensions;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -11,6 +12,13 @@ namespace FakeXrmEasy
     public partial class XrmFakedContext : IXrmContext
     {
         public bool UsePipelineSimulation { get; set; }
+
+        /// <summary>
+        /// The maximum depth of nested pipeline executions before an infinite loop fault is thrown. Defaults to 8, the server default.
+        /// </summary>
+        public int MaxPipelineDepth { get; set; } = 8;
+
+        private readonly Stack<XrmFakedPluginExecutionContext> _pipelineContexts = new Stack<XrmFakedPluginExecutionContext>();
 
         /// <summary>
         /// Registers the <typeparamref name="TPlugin"/> as a SDK Message Processing Step for the Entity <typeparamref name="TEntity"/>.
@@ -27,6 +35,11 @@ namespace FakeXrmEasy
             where TPlugin : IPlugin
             where TEntity : Entity, new()
         {
+            if (ProxyTypesAssembly == null)
+            {
+                ProxyTypesAssembly = typeof(TEntity).Assembly;
+            }
+
             var entity = new TEntity();
             var entityTypeCode = (int)entity.GetType().GetField("EntityTypeCode").GetValue(entity);
 
@@ -158,7 +171,28 @@ namespace FakeXrmEasy
                 pluginContext.PostEntityImages = new EntityImageCollection();
                 AddStepImages(plugin, pluginContext, preImageSource, postImageSource);
 
-                pluginMethod.Invoke(this, new object[] { pluginContext });
+                if (_pipelineContexts.Count > 0)
+                {
+                    var parent = _pipelineContexts.Peek();
+                    pluginContext.Depth = Math.Max(parent.Depth, 1) + 1;
+                    pluginContext.ParentContext = parent;
+                    pluginContext.CorrelationId = parent.CorrelationId;
+                }
+
+                if (pluginContext.Depth > MaxPipelineDepth)
+                {
+                    FakeOrganizationServiceFault.Throw(ErrorCodes.SdkCorrelationTokenDepthTooHigh,
+                        "This workflow job was canceled because the workflow that started it included an infinite loop. Correct the workflow logic and try again.");
+                }
+
+                try
+                {
+                    pluginMethod.Invoke(this, new object[] { pluginContext });
+                }
+                catch (TargetInvocationException ex) when (ex.InnerException != null)
+                {
+                    ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+                }
             }
         }
 
@@ -200,6 +234,12 @@ namespace FakeXrmEasy
             }
 
             return image;
+        }
+
+        private int? ResolveEntityTypeCode(Entity entity)
+        {
+            var entityType = entity.GetType() != typeof(Entity) ? entity.GetType() : FindReflectedType(entity.LogicalName);
+            return (int?)entityType?.GetField("EntityTypeCode")?.GetValue(null);
         }
 
         private static bool PassesFilteringAttributes(Entity step, object target)
@@ -272,7 +312,7 @@ namespace FakeXrmEasy
                 }
             };
 
-            var entityTypeCode = (int?)entity.GetType().GetField("EntityTypeCode")?.GetValue(entity);
+            var entityTypeCode = ResolveEntityTypeCode(entity);
 
             var plugins = this.Service.RetrieveMultiple(query).Entities.AsEnumerable();
             plugins = plugins.Where(p =>

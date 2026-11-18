@@ -17,7 +17,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.InitializeFromRequestTests
             {
                 ProxyTypesAssembly = Assembly.GetAssembly(typeof(Contact))
             };
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
             var lead = new Entity
             {
                 LogicalName = "Lead",
@@ -47,7 +47,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.InitializeFromRequestTests
                 ProxyTypesAssembly = Assembly.GetAssembly(typeof(Contact))
             };
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var lead = new Lead
             {
@@ -79,7 +79,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.InitializeFromRequestTests
                 ProxyTypesAssembly = Assembly.GetAssembly(typeof(Contact))
             };
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var lead = new Lead
             {
@@ -102,7 +102,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.InitializeFromRequestTests
             var result = (InitializeFromResponse)service.Execute(req);
             var contact = result.Entity.ToEntity<Contact>();
             Assert.Equal("Arjen", contact.FirstName);
-            Assert.Equal(null, contact.LastName);
+            Assert.Null(contact.LastName);
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.InitializeFromRequestTests
                 ProxyTypesAssembly = Assembly.GetAssembly(typeof(Contact))
             };
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var lead = new Lead
             {
@@ -147,7 +147,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.InitializeFromRequestTests
                 ProxyTypesAssembly = Assembly.GetAssembly(typeof(Contact))
             };
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var lead = new Lead
             {
@@ -177,7 +177,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.InitializeFromRequestTests
         {
             var ctx = new XrmFakedContext();
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var lead = new Lead
             {
@@ -207,7 +207,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.InitializeFromRequestTests
             string sourceEntityLogicalName = "lead";
             string targetEntityLogicalName = "contact";
 
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var lead = new Entity
             {

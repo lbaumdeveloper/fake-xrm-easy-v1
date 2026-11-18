@@ -24,7 +24,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.QueryLookupTests
                 user, user2, account, account2
             });
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             QueryExpression query = new QueryExpression();
             query.ColumnSet = new ColumnSet(new string[] { "name" });
@@ -37,7 +37,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.QueryLookupTests
             Collection<Entity> entityList = ((RetrieveMultipleResponse)service.Execute(request)).EntityCollection.Entities;
 
             Assert.True(entityList.Count == 1);
-            Assert.Equal(entityList[0]["name"].ToString(), "Test");
+            Assert.Equal("Test", entityList[0]["name"].ToString());
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.QueryLookupTests
                 user, user2, account, account2
             });
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             QueryExpression query = new QueryExpression();
             query.ColumnSet = new ColumnSet(new string[] { "name" });
@@ -66,7 +66,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.QueryLookupTests
             Collection<Entity> entityList = ((RetrieveMultipleResponse)service.Execute(request)).EntityCollection.Entities;
 
             Assert.True(entityList.Count == 1);
-            Assert.Equal(entityList[0]["name"].ToString(), "Test");
+            Assert.Equal("Test", entityList[0]["name"].ToString());
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.QueryLookupTests
                 user, user2, account, account2
             });
 
-            var service = context.GetFakedOrganizationService();
+            var service = context.GetOrganizationService();
 
             QueryExpression query = new QueryExpression();
             query.ColumnSet = new ColumnSet(new string[] { "name" });
@@ -95,7 +95,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.QueryLookupTests
             Collection<Entity> entityList = ((RetrieveMultipleResponse)service.Execute(request)).EntityCollection.Entities;
 
             Assert.True(entityList.Count == 1);
-            Assert.Equal(entityList[0]["name"].ToString(), "Test");
+            Assert.Equal("Test", entityList[0]["name"].ToString());
         }
     }
 }

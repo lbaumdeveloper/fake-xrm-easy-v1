@@ -13,7 +13,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.OptionSetValuesRequestTests
         public void When_calling_insert_option_set_value_without_label_exception_is_thrown()
         {
             var ctx = new XrmFakedContext();
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var req = new InsertOptionValueRequest()
             {
@@ -27,7 +27,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.OptionSetValuesRequestTests
         public void When_calling_insert_option_set_value_without_optionsetname_exception_is_thrown()
         {
             var ctx = new XrmFakedContext();
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var req = new InsertOptionValueRequest()
             {
@@ -41,7 +41,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.OptionSetValuesRequestTests
         public void When_calling_insert_option_set_value_without_entityname_or_attributename_exception_is_thrown()
         {
             var ctx = new XrmFakedContext();
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var req = new InsertOptionValueRequest()
             {
@@ -64,7 +64,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.OptionSetValuesRequestTests
         public void When_calling_insert_option_set_value_for_global_optionset_optionmetadata_contains_it()
         {
             var ctx = new XrmFakedContext();
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var req = new InsertOptionValueRequest()
             {
@@ -78,7 +78,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.OptionSetValuesRequestTests
             Assert.True(ctx.OptionSetValuesMetadata.ContainsKey("GlobalOptionSet"));
 
             var option = ctx.OptionSetValuesMetadata["GlobalOptionSet"].Options.FirstOrDefault();
-            Assert.NotEqual(null, option);
+            Assert.NotNull(option);
             Assert.Equal("Yeah! This is a fake label!", option.Label.LocalizedLabels[0].Label);
         }
 
@@ -86,7 +86,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.OptionSetValuesRequestTests
         public void When_calling_insert_option_set_value_for_local_optionset_optionmetadata_contains_it()
         {
             var ctx = new XrmFakedContext();
-            var service = ctx.GetFakedOrganizationService();
+            var service = ctx.GetOrganizationService();
 
             var req = new InsertOptionValueRequest()
             {
@@ -103,7 +103,7 @@ namespace FakeXrmEasy.Tests.FakeContextTests.OptionSetValuesRequestTests
             Assert.True(ctx.OptionSetValuesMetadata.ContainsKey(key));
 
             var option = ctx.OptionSetValuesMetadata[key].Options.FirstOrDefault();
-            Assert.NotEqual(null, option);
+            Assert.NotNull(option);
             Assert.Equal("Yeah! This is a fake label!", option.Label.LocalizedLabels[0].Label);
         }
     }
