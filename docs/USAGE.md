@@ -17,7 +17,7 @@ Every snippet in this guide is taken from [`tests/FakeXrmEasy.Tests/UsageGuide/U
 
 ## 1. Set up a test project
 
-Plugins and workflow activities for v9 run on .NET Framework, so the test project must target .NET Framework 4.6.2 or later. An SDK-style xUnit project looks like this:
+Plugins and workflow activities for v9 run on .NET Framework, so the test project must target .NET Framework 4.6.2 or later. An SDK-style NUnit project looks like this:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -29,8 +29,8 @@ Plugins and workflow activities for v9 run on .NET Framework, so the test projec
   <ItemGroup>
     <PackageReference Include="Reforged.FakeXrmEasy.v9" Version="1.59.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="all" />
+    <PackageReference Include="NUnit" Version="4.6.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.1" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +42,8 @@ Plugins and workflow activities for v9 run on .NET Framework, so the test projec
   </ItemGroup>
 </Project>
 ```
+
+The test snippets in this guide are method bodies. Put them in a class with `using NUnit.Framework;` and mark each method with `[Test]`.
 
 ### Package source
 
@@ -91,8 +93,8 @@ context.Initialize(new[] { account, contact });
 
 var retrieved = service.Retrieve("contact", contact.Id, new ColumnSet("firstname", "parentcustomerid"));
 
-Assert.Equal("Lukas", retrieved.GetAttributeValue<string>("firstname"));
-Assert.Equal(account.Id, retrieved.GetAttributeValue<EntityReference>("parentcustomerid").Id);
+Assert.That(retrieved.GetAttributeValue<string>("firstname"), Is.EqualTo("Lukas"));
+Assert.That(retrieved.GetAttributeValue<EntityReference>("parentcustomerid").Id, Is.EqualTo(account.Id));
 ```
 
 `Initialize` may be called only once per context. Records need an `Id`. Lookups are not checked against existing records unless you set `context.ValidateReferences = true`.
@@ -110,8 +112,8 @@ var service = context.GetOrganizationService();
 var id = service.Create(new Entity("account") { ["name"] = "Fabrikam" });
 
 var account = service.Retrieve("account", id, new ColumnSet(true));
-Assert.Equal(userId, account.GetAttributeValue<EntityReference>("createdby").Id);
-Assert.Equal(userId, account.GetAttributeValue<EntityReference>("ownerid").Id);
+Assert.That(account.GetAttributeValue<EntityReference>("createdby").Id, Is.EqualTo(userId));
+Assert.That(account.GetAttributeValue<EntityReference>("ownerid").Id, Is.EqualTo(userId));
 ```
 
 ### Early-bound entities
@@ -126,7 +128,7 @@ var service = context.GetOrganizationService();
 var id = service.Create(new Account { Name = "Contoso Ltd" });
 
 var account = service.Retrieve(Account.EntityLogicalName, id, new ColumnSet(true)).ToEntity<Account>();
-Assert.Equal("Contoso Ltd", account.Name);
+Assert.That(account.Name, Is.EqualTo("Contoso Ltd"));
 ```
 
 Adding an early-bound record (through `Initialize` or `Create`) enables its assembly automatically. With proxy types enabled, every entity you use must exist in the generated classes, and query conditions are compared using the generated property types.
@@ -139,8 +141,8 @@ For assertions you can read the store directly instead of going through the serv
 service.Create(new Entity("account") { ["name"] = "A" });
 service.Create(new Entity("account") { ["name"] = "B" });
 
-Assert.Equal(2, context.Data["account"].Count);
-Assert.Equal(2, context.CreateQuery("account").Count());
+Assert.That(context.Data["account"].Count, Is.EqualTo(2));
+Assert.That(context.CreateQuery("account").Count(), Is.EqualTo(2));
 ```
 
 ## 3. Testing plugins
@@ -185,7 +187,7 @@ var target = new Entity("contact") { Id = Guid.NewGuid(), ["firstname"] = "Lukas
 
 context.ExecutePluginWithTarget<ContactNormalizePlugin>(target, "Create", (int)ProcessingStepStage.Preoperation);
 
-Assert.Equal("Lukas Baum", target["fullname"]);
+Assert.That(target["fullname"], Is.EqualTo("Lukas Baum"));
 ```
 
 Message and stage default to `"Create"` and `40` (post-operation).
@@ -210,7 +212,7 @@ pluginContext.PreEntityImages.Add("PreImage", preImage);
 
 context.ExecutePluginWith<ContactNormalizePlugin>(pluginContext);
 
-Assert.Equal("Lukas Smith", target["fullname"]);
+Assert.That(target["fullname"], Is.EqualTo("Lukas Smith"));
 ```
 
 Post-images go into `pluginContext.PostEntityImages` the same way. The image name must match the alias the plugin reads.
@@ -224,7 +226,7 @@ var target = new Entity("contact") { Id = Guid.NewGuid(), ["emailaddress1"] = "n
 var ex = Assert.Throws<InvalidPluginExecutionException>(
     () => context.ExecutePluginWithTarget<ContactNormalizePlugin>(target));
 
-Assert.Contains("not a valid email address", ex.Message);
+Assert.That(ex.Message, Does.Contain("not a valid email address"));
 ```
 
 ### Trace output
@@ -235,7 +237,7 @@ var target = new Entity("contact") { Id = Guid.NewGuid(), ["firstname"] = "Lukas
 
 context.ExecutePluginWithTarget<ContactNormalizePlugin>(target);
 
-Assert.Contains("Full name set to Lukas", context.GetFakeTracingService().DumpTrace());
+Assert.That(context.GetFakeTracingService().DumpTrace(), Does.Contain("Full name set to Lukas"));
 ```
 
 The trace collects everything written during the context's lifetime, from all plugins and workflow activities.
@@ -271,8 +273,8 @@ var account = new Entity("account") { Id = Guid.NewGuid(), ["name"] = "Contoso L
 context.ExecutePluginWithTarget<AccountFollowUpPlugin>(account, "Create", (int)ProcessingStepStage.Postoperation);
 
 var task = context.CreateQuery("task").Single();
-Assert.Equal("Welcome call for Contoso Ltd", task["subject"]);
-Assert.Equal(account.Id, task.GetAttributeValue<EntityReference>("regardingobjectid").Id);
+Assert.That(task["subject"], Is.EqualTo("Welcome call for Contoso Ltd"));
+Assert.That(task.GetAttributeValue<EntityReference>("regardingobjectid").Id, Is.EqualTo(account.Id));
 ```
 
 ### Delete and other EntityReference targets
@@ -309,7 +311,7 @@ pluginContext.InputParameters["Target"] = target;
 
 context.ExecutePluginWithConfigurations<DefaultCreditLimitPlugin>(pluginContext, "2500", null);
 
-Assert.Equal(2500m, target.GetAttributeValue<Money>("creditlimit").Value);
+Assert.That(target.GetAttributeValue<Money>("creditlimit").Value, Is.EqualTo(2500m));
 ```
 
 If your plugin needs constructor dependencies, create the instance yourself and call `context.ExecutePluginWith(pluginContext, instance)`.
@@ -328,7 +330,7 @@ var service = context.GetOrganizationService();
 
 service.Create(new Account { Name = "Contoso Ltd" });
 
-Assert.Single(context.CreateQuery("task"));
+Assert.That(context.CreateQuery("task"), Has.Exactly(1).Items);
 ```
 
 ### Images and filtering attributes
@@ -350,7 +352,7 @@ service.Update(new Contact { Id = contactId, LastName = "Smith" });
 service.Update(new Contact { Id = contactId, JobTitle = "Developer" });
 
 var contact = service.Retrieve(Contact.EntityLogicalName, contactId, new ColumnSet("fullname")).ToEntity<Contact>();
-Assert.Equal("Lukas Smith", contact.FullName);
+Assert.That(contact.FullName, Is.EqualTo("Lukas Smith"));
 ```
 
 Which images a stage receives:
@@ -429,8 +431,8 @@ var outputs = context.ExecuteCodeActivity<CreatePhoneCallActivity>(account, inpu
 
 var phoneCallRef = (EntityReference)outputs["PhoneCall"];
 var phoneCall = context.GetOrganizationService().Retrieve("phonecall", phoneCallRef.Id, new ColumnSet(true));
-Assert.Equal("Discuss renewal", phoneCall["subject"]);
-Assert.Equal(account.Id, phoneCall.GetAttributeValue<EntityReference>("regardingobjectid").Id);
+Assert.That(phoneCall["subject"], Is.EqualTo("Discuss renewal"));
+Assert.That(phoneCall.GetAttributeValue<EntityReference>("regardingobjectid").Id, Is.EqualTo(account.Id));
 ```
 
 `[Default]` is only read by the CRM process designer. In a test, an input you don't pass has the type's default value (`0` for `DueInDays`), so pass every input the activity relies on.
@@ -454,8 +456,8 @@ context.ExecuteCodeActivity<CreatePhoneCallActivity>(workflowContext,
     new Dictionary<string, object> { { "Subject", "Check data" }, { "DueInDays", 1 } });
 
 var phoneCall = context.CreateQuery("phonecall").Single();
-Assert.Equal(userId, workflowContext.UserId);
-Assert.Equal(userId, phoneCall.GetAttributeValue<EntityReference>("ownerid").Id);
+Assert.That(workflowContext.UserId, Is.EqualTo(userId));
+Assert.That(phoneCall.GetAttributeValue<EntityReference>("ownerid").Id, Is.EqualTo(userId));
 ```
 
 `CreateOrganizationService(userId)` always returns the context's service, which runs as `context.CallerId`. To test code that impersonates a user, set `CallerId` to that user, not only the context's `UserId`.
@@ -495,8 +497,8 @@ account.LinkCriteria.AddCondition("address1_city", ConditionOperator.Equal, "Ber
 
 var contacts = service.RetrieveMultiple(query).Entities;
 
-Assert.Equal(new[] { "Baum", "Meyer" }, contacts.Select(c => c.GetAttributeValue<string>("lastname")));
-Assert.Equal("Contoso Ltd", contacts[0].GetAttributeValue<AliasedValue>("acc.name").Value);
+Assert.That(contacts.Select(c => c.GetAttributeValue<string>("lastname")), Is.EqualTo(new[] { "Baum", "Meyer" }));
+Assert.That(contacts[0].GetAttributeValue<AliasedValue>("acc.name").Value, Is.EqualTo("Contoso Ltd"));
 ```
 
 ### FetchXML
@@ -514,7 +516,7 @@ var fetchXml = @"
 
 var contacts = service.RetrieveMultiple(new FetchExpression(fetchXml)).Entities;
 
-Assert.Equal("Baum", contacts.Single()["lastname"]);
+Assert.That(contacts.Single()["lastname"], Is.EqualTo("Baum"));
 ```
 
 Aggregates (`count`, `countcolumn`, `sum`, `avg`, `min`, `max`) and `groupby` are supported:
@@ -532,7 +534,7 @@ var fetchXml = $@"
 
 var result = service.RetrieveMultiple(new FetchExpression(fetchXml)).Entities.Single();
 
-Assert.Equal(3500m, ((Money)result.GetAttributeValue<AliasedValue>("total").Value).Value);
+Assert.That(((Money)result.GetAttributeValue<AliasedValue>("total").Value).Value, Is.EqualTo(3500m));
 ```
 
 ### LINQ
@@ -546,7 +548,7 @@ var names = (from c in context.CreateQuery("contact")
              orderby c.GetAttributeValue<string>("lastname")
              select c.GetAttributeValue<string>("lastname")).ToList();
 
-Assert.Equal(new[] { "Baum", "Meyer" }, names);
+Assert.That(names, Is.EqualTo(new[] { "Baum", "Meyer" }));
 ```
 
 ```csharp
@@ -559,7 +561,7 @@ context.Initialize(new[]
 
 var large = context.CreateQuery<Account>().Where(a => a.NumberOfEmployees > 100).Select(a => a.Name).ToList();
 
-Assert.Equal(new[] { "Contoso Ltd" }, large);
+Assert.That(large, Is.EqualTo(new[] { "Contoso Ltd" }));
 ```
 
 Code under test that uses an `OrganizationServiceContext` (for example a CrmSvcUtil service context) also works: create it with `context.GetOrganizationService()`.
@@ -584,7 +586,7 @@ context.Initialize(new[]
 var query = new QueryExpression("account");
 query.Criteria.AddCondition("ownerid", ConditionOperator.EqualUserOrUserTeams);
 
-Assert.Equal(2, context.GetOrganizationService().RetrieveMultiple(query).Entities.Count);
+Assert.That(context.GetOrganizationService().RetrieveMultiple(query).Entities.Count, Is.EqualTo(2));
 ```
 
 ## 7. Built-in messages
@@ -609,8 +611,8 @@ service.Execute(new SetStateRequest
 service.Execute(new AssignRequest { Target = account.ToEntityReference(), Assignee = newOwner });
 
 var updated = service.Retrieve("account", account.Id, new ColumnSet("statecode", "ownerid"));
-Assert.Equal(1, updated.GetAttributeValue<OptionSetValue>("statecode").Value);
-Assert.Equal(newOwner.Id, updated.GetAttributeValue<EntityReference>("ownerid").Id);
+Assert.That(updated.GetAttributeValue<OptionSetValue>("statecode").Value, Is.EqualTo(1));
+Assert.That(updated.GetAttributeValue<EntityReference>("ownerid").Id, Is.EqualTo(newOwner.Id));
 ```
 
 ### SendEmail
@@ -631,7 +633,7 @@ var service = context.GetOrganizationService();
 
 service.Execute(new SendEmailRequest { EmailId = email.Id, IssueSend = true, TrackingToken = string.Empty });
 
-Assert.Equal(3, service.Retrieve("email", email.Id, new ColumnSet("statuscode")).GetAttributeValue<OptionSetValue>("statuscode").Value);
+Assert.That(service.Retrieve("email", email.Id, new ColumnSet("statuscode")).GetAttributeValue<OptionSetValue>("statuscode").Value, Is.EqualTo(3));
 ```
 
 ### N:N relationships
@@ -657,7 +659,7 @@ service.Associate("account", account.Id, new Relationship("accountleads_associat
     new EntityReferenceCollection { lead.ToEntityReference() });
 
 var link = context.CreateQuery("accountleads").Single();
-Assert.Equal(lead.Id, link.GetAttributeValue<Guid>("leadid"));
+Assert.That(link.GetAttributeValue<Guid>("leadid"), Is.EqualTo(lead.Id));
 ```
 
 ### ExecuteMultiple
@@ -675,9 +677,9 @@ var request = new ExecuteMultipleRequest
 
 var response = (ExecuteMultipleResponse)service.Execute(request);
 
-Assert.False(response.IsFaulted);
-Assert.Equal(2, response.Responses.Count);
-Assert.Equal(2, context.CreateQuery("account").Count());
+Assert.That(response.IsFaulted, Is.False);
+Assert.That(response.Responses.Count, Is.EqualTo(2));
+Assert.That(context.CreateQuery("account").Count(), Is.EqualTo(2));
 ```
 
 ### WhoAmI
@@ -688,7 +690,7 @@ var context = new XrmFakedContext { CallerId = new EntityReference("systemuser",
 
 var response = (WhoAmIResponse)context.GetOrganizationService().Execute(new WhoAmIRequest());
 
-Assert.Equal(userId, response.UserId);
+Assert.That(response.UserId, Is.EqualTo(userId));
 ```
 
 `BusinessUnitId` and `OrganizationId` are only returned when a matching `systemuser` record (with `businessunitid`) exists.
@@ -716,7 +718,7 @@ context.RegisterWorkflow(workflowId, (service, request) =>
 
 service.Execute(new ExecuteWorkflowRequest { WorkflowId = workflowId, EntityId = accountId });
 
-Assert.Single(context.ExecutedWorkflowRequests);
+Assert.That(context.ExecutedWorkflowRequests, Has.Exactly(1).Items);
 ```
 
 ## 8. Rollup fields
@@ -742,7 +744,7 @@ var response = (CalculateRollupFieldResponse)service.Execute(new CalculateRollup
     FieldName = "new_openrevenue"
 });
 
-Assert.Equal(3500m, ((Money)response.Entity["new_openrevenue"]).Value);
+Assert.That(((Money)response.Entity["new_openrevenue"]).Value, Is.EqualTo(3500m));
 ```
 
 `RollupFields` provides `Count`, `Sum`, `Avg`, `Min` and `Max`, each with an optional `FilterExpression` for the related records. For anything else pass your own `(service, target) => value` function.
@@ -822,7 +824,7 @@ var order = new Entity("salesorder") { Id = Guid.NewGuid(), ["customerid"] = acc
 
 context.ExecutePluginWithTarget<ApplyDiscountPlugin>(order);
 
-Assert.Equal(10m, order["discountpercentage"]);
+Assert.That(order["discountpercentage"], Is.EqualTo(10m));
 ```
 
 For early-bound request classes (for example generated custom action requests or SDK requests), use `context.AddFakeMessageExecutor<TRequest>(executor)` instead. It also replaces a built-in executor for that request type.
@@ -840,7 +842,7 @@ context.AddExecutionMock<RetrieveVersionRequest>(request => new RetrieveVersionR
 
 var response = (RetrieveVersionResponse)context.GetOrganizationService().Execute(new RetrieveVersionRequest());
 
-Assert.Equal("9.1.0.1234", response.Version);
+Assert.That(response.Version, Is.EqualTo("9.1.0.1234"));
 ```
 
 Remove fakes with `RemoveExecutionMock<T>()`, `RemoveFakeMessageExecutor<T>()` or `RemoveGenericFakeMessageExecutor(name)`.

@@ -55,7 +55,7 @@ dotnet add package Reforged.FakeXrmEasy.v9
 
 ### Create a test project
 
-The package does not bring a test framework. Create a .NET Framework 4.6.2 class library and add the test framework yourself, for example xUnit:
+The package does not bring a test framework. Create a .NET Framework 4.6.2 class library and add the test framework yourself. The examples use NUnit:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -67,8 +67,8 @@ The package does not bring a test framework. Create a .NET Framework 4.6.2 class
   <ItemGroup>
     <PackageReference Include="Reforged.FakeXrmEasy.v9" Version="1.59.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="all" />
+    <PackageReference Include="NUnit" Version="4.6.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.1" PrivateAssets="all" />
   </ItemGroup>
 </Project>
 ```
@@ -80,7 +80,7 @@ Add a `ProjectReference` to your plugin project and `<Reference Include="System.
 A test creates an `XrmFakedContext`, seeds it with records, runs the code under test and asserts on the in-memory data:
 
 ```csharp
-[Fact]
+[Test]
 public void Post_create_creates_follow_up_task()
 {
     var context = new XrmFakedContext();
@@ -89,7 +89,7 @@ public void Post_create_creates_follow_up_task()
     context.ExecutePluginWithTarget<AccountFollowUpPlugin>(account, "Create", (int)ProcessingStepStage.Postoperation);
 
     var task = context.CreateQuery("task").Single();
-    Assert.Equal("Welcome call for Contoso Ltd", task["subject"]);
+    Assert.That(task["subject"], Is.EqualTo("Welcome call for Contoso Ltd"));
 }
 ```
 
