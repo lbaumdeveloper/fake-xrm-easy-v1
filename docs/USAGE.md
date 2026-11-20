@@ -15,6 +15,8 @@ Every snippet in this guide is taken from [`tests/FakeXrmEasy.Tests/UsageGuide/U
 - [9. Custom fakes](#9-custom-fakes)
 - [10. Troubleshooting](#10-troubleshooting)
 
+To cut setup code, inherit your test classes from `XrmFakedTestBase`. See the [test base class guide](TEST-BASE-CLASS.md).
+
 ## 1. Set up a test project
 
 Plugins and workflow activities for v9 run on .NET Framework, so the test project must target .NET Framework 4.6.2 or later. An SDK-style NUnit project looks like this:

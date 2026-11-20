@@ -23,8 +23,8 @@ dotnet test
 | Path | Content |
 |------|---------|
 | `src/FakeXrmEasy` | The library |
-| `tests/FakeXrmEasy.Tests` | xUnit tests |
-| `docs` | [Usage guide](docs/USAGE.md) |
+| `tests/FakeXrmEasy.Tests` | xUnit and NUnit tests |
+| `docs` | [Usage guide](docs/USAGE.md), [Test base class](docs/TEST-BASE-CLASS.md) |
 
 ## CI and releases
 
@@ -106,6 +106,8 @@ The [usage guide](docs/USAGE.md) has tested examples for:
 - [Rollup fields](docs/USAGE.md#8-rollup-fields): `RegisterRollupField` with `RollupFields.Count/Sum/Avg/Min/Max`
 - [Custom fakes](docs/USAGE.md#9-custom-fakes): custom actions, execution mocks, replacing built-in executors
 - [Troubleshooting](docs/USAGE.md#10-troubleshooting)
+
+To cut setup code, inherit your test classes from `XrmFakedTestBase`. See [docs/TEST-BASE-CLASS.md](docs/TEST-BASE-CLASS.md).
 
 ## License
 
