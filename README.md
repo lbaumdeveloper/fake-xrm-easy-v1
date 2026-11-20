@@ -53,6 +53,28 @@ dotnet nuget add source "https://<gitlab-host>/api/v4/projects/<project-id>/pack
 dotnet add package Reforged.FakeXrmEasy.v9
 ```
 
+### Create a test project
+
+The package does not bring a test framework. Create a .NET Framework 4.6.2 class library and add the test framework yourself, for example xUnit:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Reforged.FakeXrmEasy.v9" Version="1.59.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
+```
+
+Add a `ProjectReference` to your plugin project and `<Reference Include="System.Activities" />` when you test custom workflow activities. See [docs/USAGE.md](docs/USAGE.md) for the full setup.
+
 ## Usage
 
 A test creates an `XrmFakedContext`, seeds it with records, runs the code under test and asserts on the in-memory data:
