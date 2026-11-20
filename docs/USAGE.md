@@ -229,6 +229,15 @@ var ex = Assert.Throws<InvalidPluginExecutionException>(
 Assert.That(ex.Message, Does.Contain("not a valid email address"));
 ```
 
+To assert that a plugin runs without throwing, pass the call as a delegate and use `Throws.Nothing`:
+
+```csharp
+var context = new XrmFakedContext();
+var target = new Entity("contact") { Id = Guid.NewGuid(), ["emailaddress1"] = "lbaumdeveloper+valid@gmail.com" };
+
+Assert.That(() => context.ExecutePluginWithTarget<ContactNormalizePlugin>(target), Throws.Nothing);
+```
+
 ### Trace output
 
 ```csharp
